@@ -1,0 +1,19 @@
+---
+
+- name: Install Zsh
+  ansible.builtin.package:
+    name: "{{ zsh_package }}"
+    state: present
+  register: zsh_install
+  ignore_errors: true
+
+- name: Set Zsh as default login shell for the current user
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    shell: "{{ zsh_shell }}"
+  when: zsh_install.succeeded
+
+- name: Skip setting default shell because Zsh installation failed
+  ansible.builtin.debug:
+    msg: "Skipping default shell change: Zsh installation failed."
+  when: zsh_install.failed
