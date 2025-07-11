@@ -3,19 +3,21 @@
 - name: Bootstrap local developer machine
   hosts: local
   gather_facts: true
-  become: true
   pre_tasks:
     - name: Update repositories and perform dist-upgrade on Debian/Ubuntu
       when: ansible_facts.pkg_mgr == 'apt'
+      become: true
       ansible.builtin.apt:
         update_cache: true  # runs apt-get update
         upgrade: dist # runs apt-get dist-upgrade
 
     - name: Sync database and upgrade on Arch Linux
       when: ansible_facts.pkg_mgr == 'pacman'
+      become: true
       community.general.pacman:
         update_cache: true  # runs pacman -Sy
         upgrade: true # runs pacman -Su
 
   roles:
-    - terminal
+    - role: terminal
+      become: true
