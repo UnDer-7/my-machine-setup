@@ -2,7 +2,6 @@
 # VARIABLES
 # ==================================================================================== #
 ANSIBLE_PLAYBOOK := playbook.yml
-INVENTORY        := inventory/hosts.ini
 ANSIBLE          := ansible-playbook
 
 
@@ -47,4 +46,4 @@ install-ansible/ubuntu:
 .PHONY: up
 up:
 	@echo ">>> Executing playbook $(ANSIBLE_PLAYBOOK) on localhost…"
-	$(ANSIBLE) -i $(INVENTORY) $(ANSIBLE_PLAYBOOK) -c local
+	$(ANSIBLE) $(ANSIBLE_PLAYBOOK) -c local

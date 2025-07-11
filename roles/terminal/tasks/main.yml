@@ -11,7 +11,7 @@
   ansible.builtin.user:
     name: "{{ ansible_user_id }}"
     shell: "{{ zsh_shell }}"
-  when: zsh_install.succeeded
+  when: not zsh_install.failed
 
 - name: Skip setting default shell because Zsh installation failed
   ansible.builtin.debug:
