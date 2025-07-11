@@ -2,7 +2,7 @@
 # VARIABLES
 # ==================================================================================== #
 ANSIBLE_PLAYBOOK := playbook.yml
-INVENTORY        := inventory
+INVENTORY        := inventory/hosts.ini
 ANSIBLE          := ansible-playbook
 
 
