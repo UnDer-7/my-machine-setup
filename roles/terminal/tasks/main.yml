@@ -1,5 +1,7 @@
 ---
 
+# ToDo: Talvez usar tag para controlar qual OS usar
+
 - name: Install Zsh
   ansible.builtin.package:
     name: "{{ zsh_package }}"
@@ -7,20 +9,28 @@
   register: zsh_install
   ignore_errors: true
 
-- name: Lookup Zsh binary path
+- name: Get current login shell
   ansible.builtin.set_fact:
-    zsh_shell: "{{ lookup('pipe', 'which zsh') }}"
-  when: not zsh_install.failed
+    current_shell: "{{ ansible_facts.shell }}"
 
-- name: Set Zsh as default login shell for the current user
-  ansible.builtin.user:
-    name: "{{ ansible_user_id }}"
-    shell: "{{ zsh_shell }}"
+- name: Change default shell via chsh
+  ansible.builtin.command:
+    argv:
+      - chsh
+      - -s
+      - "{{ lookup('pipe', 'which zsh') }}"
+      - "{{ ansible_user_id }}"
+  register: chsh_result
+  changed_when: chsh_result.rc == 0
   when:
     - not zsh_install.failed
-    - zsh_shell is defined and zsh_shell != ""
+    - current_shell != lookup('pipe','which zsh')
 
-- name: Skip setting default shell because Zsh installation failed
+- name: Skip setting default shell
   ansible.builtin.debug:
-    msg: "Skipping default shell change: Zsh installation failed."
-  when: zsh_install.failed
+    msg: >-
+      {% if zsh_install.failed %}
+        Skipping default shell: Zsh installation failed.
+      {% else %}
+        Skipping default shell: already set to {{ current_shell }}.
+      {% endif %}
