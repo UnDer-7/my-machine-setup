@@ -31,9 +31,9 @@ all: help
 # ==================================================================================== #
 ## ===== ANSIBLE =====
 # ==================================================================================== #
-## install-dep/ubuntu: Install Ansible on Ubuntu via official PPA
-.PHONY: install-dep/ubuntu
-install-dep/ubuntu:
+## install-ansible/ubuntu: Install Ansible on Ubuntu via official PPA
+.PHONY: install-ansible/ubuntu
+install-ansible/ubuntu:
 	@echo ">>> Installing Ansible on Ubuntu via PPA…"
 	sudo apt update
 	sudo apt install -y software-properties-common
