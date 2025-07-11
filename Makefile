@@ -31,8 +31,8 @@ all: help
 # ==================================================================================== #
 ## ===== ANSIBLE =====
 # ==================================================================================== #
-## install-dep/ubuntu:: Install Ansible on Ubuntu via official PPA
-.PHONY: install-dep/ubuntu:
+## install-dep/ubuntu: Install Ansible on Ubuntu via official PPA
+.PHONY: install-dep/ubuntu
 install-dep/ubuntu:
 	@echo ">>> Installing Ansible on Ubuntu via PPA…"
 	sudo apt update
