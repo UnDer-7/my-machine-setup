@@ -7,11 +7,18 @@
   register: zsh_install
   ignore_errors: true
 
+- name: Lookup Zsh binary path
+  ansible.builtin.set_fact:
+    zsh_shell: "{{ lookup('pipe', 'which zsh') }}"
+  when: not zsh_install.failed
+
 - name: Set Zsh as default login shell for the current user
   ansible.builtin.user:
     name: "{{ ansible_user_id }}"
     shell: "{{ zsh_shell }}"
-  when: not zsh_install.failed
+  when:
+    - not zsh_install.failed
+    - zsh_shell is defined and zsh_shell != ""
 
 - name: Skip setting default shell because Zsh installation failed
   ansible.builtin.debug:

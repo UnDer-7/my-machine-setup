@@ -11,14 +11,14 @@ zsh_package_names:
 # Select the correct package name based on the detected distribution, defaulting to zsh
 zsh_package: "{{ zsh_package_names[ansible_facts.distribution] | default('zsh') }}"
 
-##################
-#### ZSH PATH ####
-##################
-# Map the path to the Zsh binary
-zsh_shell_paths:
-  Debian: "/usr/bin/zsh"
-  Ubuntu: "/usr/bin/zsh"
-  Archlinux: "/usr/bin/zsh"
-
-# Pick the right shell path, defaulting to /usr/bin/zsh
-zsh_shell: "{{ zsh_shell_paths[ansible_facts.distribution] | default('/usr/bin/zsh') }}"
+###################
+##### ZSH PATH ####
+###################
+## Map the path to the Zsh binary
+# zsh_shell_paths:
+#  Debian: "/usr/bin/zsh"
+#  Ubuntu: "/usr/bin/zsh"
+#  Archlinux: "/usr/bin/zsh"
+#
+## Pick the right shell path, defaulting to /usr/bin/zsh
+# zsh_shell: "{{ zsh_shell_paths[ansible_facts.distribution] | default('/usr/bin/zsh') }}"
