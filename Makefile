@@ -2,9 +2,8 @@
 # VARIABLES
 # ==================================================================================== #
 ANSIBLE_PLAYBOOK := playbook.yml
-INVENTORY := inventory
-VENV_DIR := .venv
-ANSIBLE := $(VENV_DIR)/bin/ansible-playbook
+INVENTORY        := inventory
+ANSIBLE          := ansible-playbook
 
 
 
@@ -28,28 +27,23 @@ all: help
 
 
 
+
 # ==================================================================================== #
 ## ===== ANSIBLE =====
 # ==================================================================================== #
-## install-dep: Install Python, virtualenv, pip and Ansible in a venv
-.PHONY: install-dep
-install-dep:
-	@echo ">>> Installing system packages for Python and venv..."
-	if command -v apt-get >/dev/null; then \
-	  sudo apt-get update && \
-	  sudo apt-get install -y python3 python3-venv python3-pip; \
-	elif command -v pacman >/dev/null; then \
-	  sudo pacman -Sy --noconfirm python python-virtualenv python-pip; \
-	else \
-	  echo "Unsupported package manager. Please install Python3, pip, virtualenv manually." >&2; exit 1; \
-	fi
-	@echo ">>> Creating virtual environment at $(VENV_DIR)..."
-	python3 -m venv $(VENV_DIR)
-	@echo ">>> Installing Ansible into venv..."
-	$(VENV_DIR)/bin/pip install --upgrade pip ansible
+## install-dep/ubuntu:: Install Ansible on Ubuntu via official PPA
+.PHONY: install-dep/ubuntu:
+install-dep/ubuntu:
+	@echo ">>> Installing Ansible on Ubuntu via PPA…"
+	sudo apt update
+	sudo apt install -y software-properties-common
+	sudo add-apt-repository --yes --update ppa:ansible/ansible
+	sudo apt update
+	sudo apt install -y ansible
+	@echo ">>> Finished installing Ansible"
 
 ## up: Run the Ansible playbook against localhost
 .PHONY: up
 up:
-	@echo ">>> Executing playbook $(ANSIBLE_PLAYBOOK) on localhost..."
+	@echo ">>> Executing playbook $(ANSIBLE_PLAYBOOK) on localhost…"
 	$(ANSIBLE) -i $(INVENTORY) $(ANSIBLE_PLAYBOOK) -c local
