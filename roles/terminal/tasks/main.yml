@@ -9,38 +9,21 @@
   register: zsh_install
   ignore_errors: true
 
-- name: Retrieve passwd entry for current user
+- name: Find Zsh binary path
   ansible.builtin.command:
     argv:
-      - getent
-      - passwd
-      - "{{ ansible_user_id }}"
-  register: passwd_entry
+      - which
+      - zsh
+  register: zsh_path
   changed_when: false
-  # we just want to read data, not mark a change
+  failed_when: zsh_path.rc != 0
+  when: not zsh_install.failed
+  # aborts this step (and skips the next) if Zsh really isn’t there
 
-- name: Parse current login shell from passwd entry
-  ansible.builtin.set_fact:
-    current_shell: "{{ passwd_entry.stdout.split(':')[-1] }}"
-
-- name: Change default shell via chsh
-  ansible.builtin.command:
-    argv:
-      - chsh
-      - -s
-      - "{{ lookup('pipe', 'which zsh') }}"
-      - "{{ ansible_user_id }}"
-  register: chsh_result
-  changed_when: chsh_result.rc == 0
+- name: Ensure default shell is Zsh for the current user
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    shell: "{{ zsh_path.stdout }}"
   when:
     - not zsh_install.failed
-    - current_shell != lookup('pipe', 'which zsh')
-
-- name: Skip setting default shell
-  ansible.builtin.debug:
-    msg: >-
-      {% if zsh_install.failed %}
-        Skipping default shell: Zsh installation failed.
-      {% else %}
-        Skipping default shell: already set to {{ current_shell }}.
-      {% endif %}
+    - zsh_path.stdout != ""
