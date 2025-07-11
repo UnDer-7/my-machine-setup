@@ -9,9 +9,19 @@
   register: zsh_install
   ignore_errors: true
 
-- name: Get current login shell
+- name: Retrieve passwd entry for current user
+  ansible.builtin.command:
+    argv:
+      - getent
+      - passwd
+      - "{{ ansible_user_id }}"
+  register: passwd_entry
+  changed_when: false
+  # we just want to read data, not mark a change
+
+- name: Parse current login shell from passwd entry
   ansible.builtin.set_fact:
-    current_shell: "{{ ansible_facts.shell }}"
+    current_shell: "{{ passwd_entry.stdout.split(':')[-1] }}"
 
 - name: Change default shell via chsh
   ansible.builtin.command:
@@ -24,7 +34,7 @@
   changed_when: chsh_result.rc == 0
   when:
     - not zsh_install.failed
-    - current_shell != lookup('pipe','which zsh')
+    - current_shell != lookup('pipe', 'which zsh')
 
 - name: Skip setting default shell
   ansible.builtin.debug:
