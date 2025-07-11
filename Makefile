@@ -37,10 +37,11 @@ install-ansible/ubuntu:
 	@echo ">>> Installing Ansible on Ubuntu via PPA…"
 	sudo apt update
 	sudo apt install -y software-properties-common
-	sudo add-apt-repository --yes --update ppa:ansible/ansible
+	sudo add-apt-repository --yes ppa:ansible/ansible
 	sudo apt update
 	sudo apt install -y ansible
 	@echo ">>> Finished installing Ansible"
+	ansible --version
 
 ## up: Run the Ansible playbook against localhost
 .PHONY: up
