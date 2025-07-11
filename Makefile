@@ -1,10 +1,10 @@
 # ==================================================================================== #
 # VARIABLES
 # ==================================================================================== #
-ANSIBLE_PLAYBOOK := playbook.yml               # Your main playbook file
-INVENTORY        := inventory                  # Your inventory file (e.g. 'localhost,')
-VENV_DIR         := .venv                      # Virtual environment directory
-ANSIBLE          := $(VENV_DIR)/bin/ansible-playbook
+ANSIBLE_PLAYBOOK := playbook.yml
+INVENTORY := inventory
+VENV_DIR := .venv
+ANSIBLE := $(VENV_DIR)/bin/ansible-playbook
 
 
 
