@@ -1,7 +1,5 @@
 ---
 
-# ToDo: Talvez usar tag para controlar qual OS usar
-
 - name: Install Zsh
   ansible.builtin.package:
     name: "{{ zsh_package }}"
