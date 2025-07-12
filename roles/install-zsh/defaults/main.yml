@@ -1,0 +1,12 @@
+#################
+## ZSH PACKAGE ##
+#################
+# Mapping of the Zsh package name by distribution
+zsh_package_names:
+  Debian: zsh
+  Ubuntu: zsh
+  Archlinux: zsh
+
+
+# Select the correct package name based on the detected distribution, defaulting to zsh
+zsh_package: "{{ zsh_package_names[ansible_facts.distribution] | default('zsh') }}"

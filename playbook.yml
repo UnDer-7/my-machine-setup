@@ -19,5 +19,5 @@
         upgrade: true # runs pacman -Su
 
   roles:
-    - role: terminal
+    - role: install-zsh
       become: true
