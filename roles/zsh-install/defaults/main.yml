@@ -1,6 +1,3 @@
-#################
-## ZSH PACKAGE ##
-#################
 # Mapping of the Zsh package name by distribution
 zsh_package_names:
   Debian: zsh

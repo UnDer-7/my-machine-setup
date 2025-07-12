@@ -1,0 +1,30 @@
+---
+
+- name: Ensure font directory exists
+  ansible.builtin.file:
+    path: "{{ font.dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Download Powerlevel10k fonts
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "{{ font.dir }}/{{ item.name }}"
+    mode: '0644'
+  loop: "{{ font.download_list }}"
+
+- name: Print terminal font setup instructions
+  ansible.builtin.debug:
+    msg: "{{ font_install_msg }}"
+
+- name: Print IntelliJ font setup instructions
+  ansible.builtin.debug:
+    msg: "{{ font.install_msg.IntelliJ }}"
+
+- name: Clone Powerlevel10k repository
+  ansible.builtin.git:
+    repo: "{{ p10k_repository.url }}"
+    dest: "{{ p10k_repository.dest }}"
+    version: "{{ p10k_repository.version }}"
+    depth: 1
+    update: true

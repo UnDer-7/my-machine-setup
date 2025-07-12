@@ -1,0 +1,15 @@
+---
+
+- name: Clone dotfile repository
+  ansible.builtin.git:
+    repo: "{{ dotfile_repository.url }}"
+    dest: "{{ dotfile_repository.dest }}"
+    version: "{{ dotfile_repository.version }}"
+    update: true
+
+- name: Setup ZDOTDIR
+  ansible.builtin.copy:
+    dest: "{{ zshenv_path }}"
+    content: |
+      export ZDOTDIR={{ dotfile_repository.dest }}/zsh
+    mode: '0644'

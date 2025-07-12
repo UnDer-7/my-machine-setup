@@ -18,6 +18,14 @@
         update_cache: true  # runs pacman -Sy
         upgrade: true # runs pacman -Su
 
+  # Should be run in order below
   roles:
-    - role: install-zsh
+    - role: zsh-install
       become: true
+    - role: zsh-dotfiles
+    - role: zsh-p10k
+
+  post_tasks:
+    - name: Notify user to re-login for shell change to take effect
+      ansible.builtin.debug:
+        msg: "Bootstrap complete! Please log out and log back in"
