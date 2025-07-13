@@ -76,7 +76,6 @@
   register: current_font
   changed_when: false
 
-# Only set MesloLGS NF Regular if it’s not already configured
 - name: Set MesloLGS NF Regular as custom GNOME Terminal font
   ansible.builtin.command:
     argv:
@@ -85,4 +84,5 @@
       - "org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:{{ gnome_profile }}/"
       - font
       - "MesloLGS NF Regular 12"
-  when: current_font.stdout.strip(\"'\") != 'MesloLGS NF Regular 12'
+  when: >
+    current_font.stdout.strip("'") != 'MesloLGS NF Regular 12'
