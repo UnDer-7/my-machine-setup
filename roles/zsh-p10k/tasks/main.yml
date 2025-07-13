@@ -25,8 +25,11 @@
     depth: 1
     update: true
 
-# 1) Gather possible OS-specific files
+# You can add a file named <Distribution>.yml (e.g. Ubuntu.yml, Fedora.yml)
+# or <OS_Family>.yml (e.g., Debian.yml, RedHat.yml) under tasks/font_setup/,
+# and the first match will be included below.
 - name: Find OS-specific font setup file(s)
+  # Build a list of candidate files by globbing for both exact distro and family
   ansible.builtin.set_fact:
     font_setup_files: >-
       {{
@@ -39,8 +42,8 @@
                wantlist=True)
       }}
 
-# 2) Fail early if none found, with a descriptive error
 - name: Fail if no OS-specific font setup file is present
+  # If neither a distro-specific nor family-specific file was found, abort with a clear error.
   ansible.builtin.fail:
     msg: |
       No OS-specific font_setup file found for your platform.
@@ -51,6 +54,6 @@
         - {{ role_path }}/tasks/font_setup/{{ ansible_facts['os_family'] }}.yml
   when: font_setup_files | length == 0
 
-# 3) Include the first matching file
 - name: Include OS-specific font setup tasks
+  # Load the first matching file (distro first, then family)
   ansible.builtin.include_tasks: "{{ font_setup_files[0] }}"
