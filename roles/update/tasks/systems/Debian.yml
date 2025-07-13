@@ -1,0 +1,8 @@
+---
+
+- name: Update repositories and perform dist-upgrade on Debian/Ubuntu
+  when: ansible_facts.pkg_mgr == 'apt'
+#  become: true
+  ansible.builtin.apt:
+    update_cache: true  # runs apt-get update
+    upgrade: dist # runs apt-get dist-upgrade

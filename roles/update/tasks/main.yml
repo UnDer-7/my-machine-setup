@@ -1,0 +1,33 @@
+---
+
+- name: Find OS-specific font setup file(s)
+  # Build a list of candidate files by globbing for both exact distro and family
+  ansible.builtin.set_fact:
+    update_os_setup_files: >-
+      {{
+        lookup('fileglob',
+               role_path + '/tasks/systems/' + ansible_facts['distribution'] + '.yml',
+               wantlist=True)
+        +
+        lookup('fileglob',
+               role_path + '/tasks/systems/' + ansible_facts['os_family'] + '.yml',
+               wantlist=True)
+      }}
+
+- name: Fail if no OS-specific font setup file is present
+  # If neither a distro-specific nor family-specific file was found, abort with a clear error.
+  ansible.builtin.fail:
+    msg: |
+      No OS-specific update file found for your platform.
+      Distribution: {{ ansible_facts['distribution'] }}
+      OS family:   {{ ansible_facts['os_family'] }}
+      Paths tried:
+        - {{ role_path }}/tasks/systems/{{ ansible_facts['distribution'] }}.yml
+        - {{ role_path }}/tasks/systems/{{ ansible_facts['os_family'] }}.yml
+  when: update_os_setup_files | length == 0
+
+- name: Include OS-specific update tasks
+  ansible.builtin.include_tasks:
+    file: "{{ update_os_setup_files[0] }}"
+    apply:
+      become: true

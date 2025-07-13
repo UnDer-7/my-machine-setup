@@ -46,4 +46,4 @@ install-ansible/ubuntu:
 .PHONY: up
 up:
 	@echo ">>> Executing playbook $(ANSIBLE_PLAYBOOK) on localhost…"
-	$(ANSIBLE) $(ANSIBLE_PLAYBOOK) -c local
+	$(ANSIBLE) $(ANSIBLE_PLAYBOOK) -c local --ask-become-pass
