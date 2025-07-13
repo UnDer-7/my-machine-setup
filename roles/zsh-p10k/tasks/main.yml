@@ -28,3 +28,29 @@
     version: "{{ p10k_repository.version }}"
     depth: 1
     update: true
+
+- name: Get GNOME Terminal default profile UUID
+  ansible.builtin.command: >
+    gsettings get org.gnome.Terminal.ProfilesList list
+  register: profile_list
+  changed_when: false
+
+- name: Extract first profile UUID
+  ansible.builtin.set_fact:
+    gnome_profile: "{{ profile_list.stdout | regex_findall(\"'([^']+)'\") | first }}"
+
+- name: Disable system font in GNOME Terminal
+  ansible.builtin.command: >
+    gsettings set
+    org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:{{ gnome_profile }}/
+    use-system-font false
+  args:
+    warn: false
+
+- name: Set MesloLGS NF Regular as custom GNOME Terminal font
+  ansible.builtin.command: >
+    gsettings set
+    org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:{{ gnome_profile }}/
+    font 'MesloLGS NF Regular 12'
+  args:
+    warn: false
