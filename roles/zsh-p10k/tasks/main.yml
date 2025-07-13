@@ -13,10 +13,6 @@
     mode: '0644'
   loop: "{{ font.download_list }}"
 
-- name: Print terminal font setup instructions
-  ansible.builtin.debug:
-    msg: "{{ font_install_msg }}"
-
 - name: Print IntelliJ font setup instructions
   ansible.builtin.debug:
     msg: "{{ font.install_msg.IntelliJ }}"

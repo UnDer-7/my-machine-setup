@@ -12,16 +12,9 @@ font:
       url: "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf"
     - name: "MesloLGS NF Bold Italic.ttf"
       url: "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf"
-  install_msg:
-    Debian: |
-      Setup fonts on GNOME Terminal (the default Ubuntu terminal):
-      Open Terminal → Preferences and click on the selected profile under Profiles.
-      Check Custom font under Text Appearance and select MesloLGS NF Regular.
-    IntelliJ: |
+  install_msg_IntelliJ: |
       IntelliJ (and other JetBrains IDEs): Open IDE → Edit → Preferences → Editor → Color Scheme → Console Font.
       Select Use console font instead of the default and set the font name to MesloLGS NF.
-
-font_install_msg: "{{ font.install_msg[ansible_facts.os_family] | default('You need search how to setup P10K fonts in your terminal') }}"
 
 ############
 ### P10K ###
