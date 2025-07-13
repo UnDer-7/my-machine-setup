@@ -25,28 +25,32 @@
     depth: 1
     update: true
 
-- name: Get GNOME Terminal default profile UUID
-  ansible.builtin.command:
-    argv:
-      - gsettings
-      - get
-      - org.gnome.Terminal.ProfilesList
-      - list
-  register: profile_list
-  changed_when: false
-
-- name: Extract first profile UUID
+# 1) Gather possible OS-specific files
+- name: Find OS-specific font setup file(s)
   ansible.builtin.set_fact:
-    gnome_profile: "{{ profile_list.stdout | regex_findall(\"'([^']+)'\") | first }}"
+    font_setup_files: >-
+      {{
+        lookup('fileglob',
+               role_path + '/tasks/font_setup/' + ansible_facts['distribution'] + '.yml',
+               wantlist=True)
+        +
+        lookup('fileglob',
+               role_path + '/tasks/font_setup/' + ansible_facts['os_family'] + '.yml',
+               wantlist=True)
+      }}
 
-- name: Disable system font in GNOME Terminal
-  community.general.dconf:
-    key: "/org/gnome/terminal/legacy/profiles:/:{{ gnome_profile }}/use-system-font"
-    value: "false"
-    state: present
+# 2) Fail early if none found, with a descriptive error
+- name: Fail if no OS-specific font setup file is present
+  ansible.builtin.fail:
+    msg: |
+      No OS-specific font_setup file found for your platform.
+      Distribution: {{ ansible_facts['distribution'] }}
+      OS family:   {{ ansible_facts['os_family'] }}
+      Paths tried:
+        - {{ role_path }}/tasks/font_setup/{{ ansible_facts['distribution'] }}.yml
+        - {{ role_path }}/tasks/font_setup/{{ ansible_facts['os_family'] }}.yml
+  when: font_setup_files | length == 0
 
-- name: Set MesloLGS NF Regular as custom GNOME Terminal font
-  community.general.dconf:
-    key: "/org/gnome/terminal/legacy/profiles:/:{{ gnome_profile }}/font"
-    value: "'MesloLGS NF Regular 12'"
-    state: present
+# 3) Include the first matching file
+- name: Include OS-specific font setup tasks
+  ansible.builtin.include_tasks: "{{ font_setup_files[0] }}"
