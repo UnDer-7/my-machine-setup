@@ -15,7 +15,7 @@
 
 - name: Print IntelliJ font setup instructions
   ansible.builtin.debug:
-    msg: "{{ font.install_msg.IntelliJ }}"
+    msg: "{{ font.install_msg_IntelliJ }}"
 
 - name: Clone Powerlevel10k repository
   ansible.builtin.git:
