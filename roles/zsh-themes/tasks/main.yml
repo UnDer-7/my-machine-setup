@@ -1,5 +1,9 @@
 ---
 
+###################
+## Powerlevel10k ##
+###################
+
 - name: Ensure font directory exists
   ansible.builtin.file:
     path: "{{ font.dir }}"

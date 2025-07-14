@@ -12,7 +12,7 @@
 
     - role: zsh-dotfiles
 
-    - role: zsh-p10k
+    - role: zsh-themes
 
   post_tasks:
     - name: Notify user to re-login for shell change to take effect
