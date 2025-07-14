@@ -1,29 +1,57 @@
 ---
 
+- name: Assert that 'include_dir' is defined and non-empty
+  ansible.builtin.assert:
+    quiet: true
+    that:
+      - include_dir is defined
+      - include_dir | length > 0
+    fail_msg: >
+      The variable 'include_dir' is required by the helper_os_task_locator role
+      and must be set to the subfolder name under tasks/ to scan.
+
+- name: Assert that 'my_role_name' is defined and non-empty
+  ansible.builtin.assert:
+    quiet: true
+    that:
+      - my_role_name is defined
+      - my_role_name | length > 0
+    fail_msg: >
+      The variable 'my_role_name' is required by the helper_os_task_locator role
+      and must be set to the calling role’s folder name.
+
+- name: Normalize distribution and os_family keys
+  ansible.builtin.set_fact:
+    distribution_key: "{{ ansible_facts['distribution'] | lower | replace(' ', '_') }}"
+    os_family_key: "{{ ansible_facts['os_family'] | lower | replace(' ', '_') }}"
+
+- name: Set OS tasks folder path
+  ansible.builtin.set_fact:
+    os_tasks_folder_path: "{{ playbook_dir + '/roles/' + my_role_name + '/tasks/' + include_dir }}"
+
+- name: Set OS-specific candidate file paths
+  ansible.builtin.set_fact:
+    distribution_task_file_path: "{{ os_tasks_folder_path + '/' + distribution_key + '.yml' }}"
+    os_family_task_file_path: "{{ os_tasks_folder_path + '/' + os_family_key + '.yml' }}"
+
 - name: Build list of OS-specific task files
   ansible.builtin.set_fact:
     os_task_files: >-
       {{
-        lookup('fileglob',
-               base_role_path + '/tasks/' + include_dir + '/' +
-               ansible_facts['distribution'] + '.yml',
-               wantlist=True)
+        lookup('fileglob', distribution_task_file_path, wantlist=True)
         +
-        lookup('fileglob',
-               base_role_path + '/tasks/' + include_dir + '/' +
-               ansible_facts['os_family'] + '.yml',
-               wantlist=True)
+        lookup('fileglob', os_family_task_file_path, wantlist=True)
       }}
 
 - name: Fail if no OS-specific task file is found
   ansible.builtin.fail:
     msg: |
       Could not find any OS-specific tasks under "{{ include_dir }}".
-      Distribution: {{ ansible_facts['distribution'] }}
-      OS family:   {{ ansible_facts['os_family'] }}
+      Distribution: {{ ansible_facts['distribution'] }} (normalized: {{ distribution_key }})
+      OS family: {{ ansible_facts['os_family'] }} (normalized: {{ os_family_key }})
       Paths tried:
-        - {{ base_role_path }}/tasks/{{ include_dir }}/{{ ansible_facts['distribution'] }}.yml
-        - {{ base_role_path }}/tasks/{{ include_dir }}/{{ ansible_facts['os_family'] }}.yml
+        - {{ distribution_task_file_path }}
+        - {{ os_family_task_file_path }}
   when: os_task_files | length == 0
 
 - name: Expose the first matching OS-specific file
