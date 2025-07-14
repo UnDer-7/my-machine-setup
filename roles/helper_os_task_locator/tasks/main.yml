@@ -1,0 +1,31 @@
+---
+
+- name: Build list of OS-specific task files
+  ansible.builtin.set_fact:
+    os_task_files: >-
+      {{
+        lookup('fileglob',
+               base_role_path + '/tasks/' + include_dir + '/' +
+               ansible_facts['distribution'] + '.yml',
+               wantlist=True)
+        +
+        lookup('fileglob',
+               base_role_path + '/tasks/' + include_dir + '/' +
+               ansible_facts['os_family'] + '.yml',
+               wantlist=True)
+      }}
+
+- name: Fail if no OS-specific task file is found
+  ansible.builtin.fail:
+    msg: |
+      Could not find any OS-specific tasks under "{{ include_dir }}".
+      Distribution: {{ ansible_facts['distribution'] }}
+      OS family:   {{ ansible_facts['os_family'] }}
+      Paths tried:
+        - {{ base_role_path }}/tasks/{{ include_dir }}/{{ ansible_facts['distribution'] }}.yml
+        - {{ base_role_path }}/tasks/{{ include_dir }}/{{ ansible_facts['os_family'] }}.yml
+  when: os_task_files | length == 0
+
+- name: Expose the first matching OS-specific file
+  ansible.builtin.set_fact:
+    os_specific_file: "{{ os_task_files[0] }}"
