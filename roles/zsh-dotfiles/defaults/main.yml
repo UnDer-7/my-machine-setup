@@ -4,7 +4,7 @@
 ###########
 dotfile_repository:
   url: "https://github.com/UnDer-7/my_dotfile_config.git"
-  dest: "{{ ansible_env.HOME }}/my_dotfile_config"
+  dest: "{{ common.dotfile_config_home }}"
   version: 'v0.0.0'
 
 zshenv_path: "{{ ansible_env.HOME }}/.zshenv"

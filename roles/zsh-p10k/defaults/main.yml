@@ -21,5 +21,5 @@ font:
 ############
 p10k_repository:
   url: "https://github.com/romkatv/powerlevel10k.git"
-  dest: "{{ ansible_env.HOME }}/powerlevel10k"
+  dest: "{{ common.dotfile_config_home }}/zsh/themes/p10k/powerlevel10k"
   version: 'v1.20.0'

@@ -1,0 +1,4 @@
+---
+
+common:
+  dotfile_config_home: "{{ ansible_env.HOME }}/my_dotfile_config"
