@@ -33,7 +33,7 @@
   ansible.builtin.include_role:
     name: helper_os_task_locator
   vars:
-    my_role_name: zsh-p10k
+    my_role_name: zsh-themes
 
 - name: Include OS-specific update tasks
   ansible.builtin.include_tasks:
