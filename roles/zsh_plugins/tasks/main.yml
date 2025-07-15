@@ -1,0 +1,13 @@
+---
+
+##############################
+## fast_syntax_highlighting ##
+##############################
+
+- name: Clone fast_syntax_highlighting plugin repository
+  ansible.builtin.git:
+    repo: "{{ fast_syntax_highlighting.url }}"
+    dest: "{{ fast_syntax_highlighting.dest }}"
+    version: "{{ fast_syntax_highlighting.version }}"
+    depth: 1
+    update: true
