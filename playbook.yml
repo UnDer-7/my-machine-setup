@@ -14,6 +14,8 @@
 
     - role: zsh-themes
 
+    - role: zsh_plugins
+
   post_tasks:
     - name: Notify user to re-login for shell change to take effect
       ansible.builtin.debug:
