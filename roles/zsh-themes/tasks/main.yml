@@ -38,5 +38,3 @@
 - name: Include OS-specific update tasks
   ansible.builtin.include_tasks:
     file: "{{ os_specific_file }}"
-    apply:
-      become: true
