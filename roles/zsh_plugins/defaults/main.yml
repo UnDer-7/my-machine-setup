@@ -1,6 +1,11 @@
 ---
 
 fast_syntax_highlighting:
-  url: https://github.com/zdharma-continuum/fast-syntax-highlighting
+  url: https://github.com/zdharma-continuum/fast-syntax-highlighting.git
   dest: "{{ common.dotfile_config_home }}/zsh/plugins/fast-syntax-highlighting"
   version: master
+
+zsh_autosuggestions:
+  url: 'https://github.com/zsh-users/zsh-autosuggestions.git'
+  dest: "{{ common.dotfile_config_home }}/zsh/plugins/zsh-autosuggestions"
+  version: 'master'

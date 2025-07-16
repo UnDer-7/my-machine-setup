@@ -11,3 +11,11 @@
     version: "{{ fast_syntax_highlighting.version }}"
     depth: 1
     update: true
+
+- name: Clone zsh_autosuggestions plugin repository
+  ansible.builtin.git:
+    repo: "{{ zsh_autosuggestions.url }}"
+    dest: "{{ zsh_autosuggestions.dest }}"
+    version: "{{ zsh_autosuggestions.version }}"
+    depth: 1
+    update: true
