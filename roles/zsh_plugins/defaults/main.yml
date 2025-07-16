@@ -9,3 +9,8 @@ zsh_autosuggestions:
   url: 'https://github.com/zsh-users/zsh-autosuggestions.git'
   dest: "{{ common.dotfile_config_home }}/zsh/plugins/zsh-autosuggestions"
   version: 'master'
+
+zsh_completions:
+  url: 'https://github.com/zsh-users/zsh-completions.git'
+  dest: "{{ common.dotfile_config_home }}/zsh/plugins/zsh-completions"
+  version: 'master'

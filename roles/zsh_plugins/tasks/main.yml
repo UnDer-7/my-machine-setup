@@ -19,3 +19,11 @@
     version: "{{ zsh_autosuggestions.version }}"
     depth: 1
     update: true
+
+- name: Clone zsh_completions plugin repository
+  ansible.builtin.git:
+    repo: "{{ zsh_completions.url }}"
+    dest: "{{ zsh_completions.dest }}"
+    version: "{{ zsh_completions.version }}"
+    depth: 1
+    update: true
