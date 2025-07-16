@@ -18,7 +18,7 @@ help:
 	@sed -n 's/^##//p' $(MAKEFILE_LIST) | column -t -s ':' | \
 	awk 'BEGIN {first=1} /^ *=====/ { if (!first) print ""; print "   " $$0; first=0; next } { print "   " $$0 }'
 
-## all: default target, shows help
+# Hidden
 .PHONY: all
 all: help
 
@@ -30,20 +30,20 @@ all: help
 # ==================================================================================== #
 ## ===== ANSIBLE =====
 # ==================================================================================== #
-## install-ansible/ubuntu: Install Ansible on Ubuntu via official PPA
-.PHONY: install-ansible/ubuntu
-install-ansible/ubuntu:
-	@echo ">>> Installing Ansible on Ubuntu via PPA…"
+## install-ansible/apt-based: Install Ansible on apt-based distributions (Ubuntu, Debian, Linux Mint, ...)
+.PHONY: install-ansible/apt-based
+install-ansible/apt-based:
+	@echo ">>> Installing Ansible via apt-based PPA…"
 	sudo apt update
 	sudo apt install -y software-properties-common
 	sudo add-apt-repository --yes ppa:ansible/ansible
 	sudo apt update
 	sudo apt install -y ansible
-	@echo ">>> Finished installing Ansible"
+	@echo ">>> Finished installing Ansible via apt-based PPA"
 	ansible --version
 
-## up: Run the Ansible playbook against localhost
-.PHONY: up
-up:
-	@echo ">>> Executing playbook $(ANSIBLE_PLAYBOOK) on localhost…"
+## bootstrap: Run the Ansible playbook to set up the local developer machine
+.PHONY: bootstrap
+bootstrap:
+	@echo ">>> Bootstrapping local developer machine with playbook $(ANSIBLE_PLAYBOOK)…"
 	$(ANSIBLE) $(ANSIBLE_PLAYBOOK) -c local --ask-become-pass
