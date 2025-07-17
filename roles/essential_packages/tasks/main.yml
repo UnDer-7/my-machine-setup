@@ -1,0 +1,7 @@
+---
+- name: Install essential packages
+  ansible.builtin.package:
+    name: "{{ essential_packages }}"
+    state: present
+  become: true
+  ignore_errors: false

@@ -1,0 +1,9 @@
+---
+
+essential_packages:
+  - unzip
+  - zip
+  - xclip
+  - curl
+  - htop
+  - wget

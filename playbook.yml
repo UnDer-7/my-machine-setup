@@ -5,16 +5,12 @@
   gather_facts: true
   # Should be run in order below
   roles:
-    - role: update
-
-    - role: zsh-install
-      become: true
-
-    - role: zsh-dotfiles
-
-    - role: zsh-themes
-
-    - role: zsh_plugins
+    - update
+    - zsh-install
+    - zsh-dotfiles
+    - zsh-themes
+    - zsh_plugins
+    - essential_packages
 
   post_tasks:
     - name: Notify user to re-login for shell change to take effect

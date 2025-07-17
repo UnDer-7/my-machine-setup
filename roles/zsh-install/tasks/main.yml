@@ -5,7 +5,8 @@
     name: "{{ zsh_package }}"
     state: present
   register: zsh_install
-  ignore_errors: true
+  become: true
+  ignore_errors: false
 
 - name: Find Zsh binary path
   ansible.builtin.command:
@@ -25,3 +26,4 @@
   when:
     - not zsh_install.failed
     - zsh_path.stdout != ""
+  become: true
