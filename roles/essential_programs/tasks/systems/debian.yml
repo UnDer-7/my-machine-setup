@@ -4,28 +4,37 @@
 ### Custom Repo ###
 ###################
 # Repo: Google Chrome
-- name: Add GPG keys for Google Chrome repo
-  ansible.builtin.apt_key:
+- name: Download Google Chrome signing key
+  ansible.builtin.get_url:
     url: "{{ essential_programs.debian_repos.custom.google_chrome.key_url }}"
-    state: present
+    dest: "{{ essential_programs.debian_repos.custom.google_chrome.keyrings }}"
+    mode: '0644'
+  become: true
 
-- name: Add Google Chrome apt repository
+- name: Add Google Chrome apt repository (signed-by keyring)
   ansible.builtin.apt_repository:
-    repo: "{{ essential_programs.debian_repos.custom.google_chrome.repo }}"
+    repo: |
+      deb [arch=amd64 signed-by={{ essential_programs.debian_repos.custom.google_chrome.keyrings }}]
+      {{ essential_programs.debian_repos.custom.google_chrome.repo }}
     state: present
+  become: true
 
 # Repo: Spotify
-- name: Add GPG keys for Spotify repo
-  ansible.builtin.apt_key:
+- name: Download Spotify signing key
+  ansible.builtin.get_url:
     url: "{{ essential_programs.debian_repos.custom.spotify.key_url }}"
-    keyring: /etc/apt/trusted.gpg.d/spotify.gpg
-    state: present
+    dest: "{{ essential_programs.debian_repos.custom.spotify.keyrings }}"
+    mode: '0644'
+  become: true
 
-- name: Add Spotify apt repository
+- name: Add Spotify apt repository (signed-by keyring)
   ansible.builtin.apt_repository:
-    repo: "{{ essential_programs.debian_repos.custom.spotify.repo }}"
+    repo: |
+      deb [signed-by={{ essential_programs.debian_repos.custom.spotify.keyrings }}]
+      {{ essential_programs.debian_repos.custom.spotify.repo }}
     filename: spotify
     state: present
+  become: true
 
 # PPA Repos
 - name: Add PPA repositories
@@ -33,12 +42,14 @@
     repo: "{{ item }}"
     state: present
   loop: "{{ essential_programs.debian_repos.ppa }}"
+  become: true
 
 # Update
 - name: Update apt cache
   ansible.builtin.apt:
     update_cache: true
     cache_valid_time: 3600
+  become: true
 
 ###################
 ### Custom Apps ###
