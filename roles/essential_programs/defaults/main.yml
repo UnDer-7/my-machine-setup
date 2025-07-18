@@ -38,9 +38,11 @@ essential_programs:
         name: "google-chrome-stable"
         repo: "http://dl.google.com/linux/chrome/deb/ stable main"
         key_url: "https://dl.google.com/linux/linux_signing_key.pub"
-        keyrings: "/etc/apt/trusted.gpg.d/google.asc"
+        ascii_key: "/usr/share/keyrings/google-chrome-archive-keyring.asc"
+        keyring: "/usr/share/keyrings/google-chrome-archive-keyring.gpg"
       spotify:
         name: "spotify-client"
         repo: "https://repository.spotify.com stable non-free"
         key_url: "https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg"
-        keyrings: "/etc/apt/trusted.gpg.d/spotify.gpg"
+        ascii_key: "/usr/share/keyrings/spotify-archive-keyring.asc"
+        keyring: "/usr/share/keyrings/spotify-archive-keyring.gpg"

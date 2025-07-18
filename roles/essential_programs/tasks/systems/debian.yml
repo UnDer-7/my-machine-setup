@@ -4,52 +4,86 @@
 ### Custom Repo ###
 ###################
 # Repo: Google Chrome
-- name: Download Google Chrome signing key
+- name: Remove old Google Chrome source list (se existir)
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/google-chrome.list
+    state: absent
+  become: true
+
+- name: Download Google Chrome public key (ASCII-armored)
   ansible.builtin.get_url:
     url: "{{ essential_programs.debian_repos.custom.google_chrome.key_url }}"
-    dest: "{{ essential_programs.debian_repos.custom.google_chrome.keyrings }}"
+    dest: "{{ essential_programs.debian_repos.custom.google_chrome.ascii_key }}"
     mode: '0644'
   become: true
 
-- name: Add Google Chrome apt repository (signed-by keyring)
-  ansible.builtin.apt_repository:
-    repo: |
-      deb [arch=amd64 signed-by={{ essential_programs.debian_repos.custom.google_chrome.keyrings }}]
-      {{ essential_programs.debian_repos.custom.google_chrome.repo }}
-    state: present
-  become: true
-
-# Repo: Spotify
-- name: Download Spotify signing key (ASCII)
-  ansible.builtin.get_url:
-    url: "{{ essential_programs.debian_repos.custom.spotify.key_url }}"
-    dest: "{{ essential_programs.debian_repos.custom.spotify.keyrings }}.asc"
-    mode: '0644'
-  become: true
-
-- name: Convert Spotify GPG key to binary (dearmor)
+- name: Convert Google Chrome key to binary format (dearmor)
   ansible.builtin.command:
     cmd: >
       gpg --batch --dearmor
       --yes
-      --output {{ essential_programs.debian_repos.custom.spotify.keyrings }}
-      {{ essential_programs.debian_repos.custom.spotify.keyrings }}.asc
+      --output {{ essential_programs.debian_repos.custom.google_chrome.keyring }}
+      {{ essential_programs.debian_repos.custom.google_chrome.ascii_key }}
   args:
-    creates: "{{ essential_programs.debian_repos.custom.spotify.keyrings }}"
+    creates: "{{ essential_programs.debian_repos.custom.google_chrome.keyring }}"
   become: true
 
-- name: Remove temporary ASCII Spotify key
+- name: Remove temporary ASCII key file
   ansible.builtin.file:
-    path: "{{ essential_programs.debian_repos.custom.spotify.keyrings }}.asc"
+    path: "{{ essential_programs.debian_repos.custom.google_chrome.ascii_key }}"
     state: absent
   become: true
 
-- name: Add Spotify APT source list
-  ansible.builtin.copy:
-    dest: /etc/apt/sources.list.d/spotify.list
-    content: |
-      deb {{ essential_programs.debian_repos.custom.spotify.repo }}
+- name: Add Google Chrome APT repository (signed-by keyring)
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [arch=amd64
+           signed-by={{ essential_programs.debian_repos.custom.google_chrome.keyring }}]
+      {{ essential_programs.debian_repos.custom.google_chrome.repo }}
+    filename: google-chrome
+    state: present
+    update_cache: false
+  become: true
+
+# Repo: Spotify
+- name: Remove old Spotify source list (se existir)
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/spotify.list
+    state: absent
+  become: true
+
+- name: Download Spotify public key (ASCII-armored)
+  ansible.builtin.get_url:
+    url: "{{ essential_programs.debian_repos.custom.spotify.key_url }}"
+    dest: "{{ essential_programs.debian_repos.custom.spotify.ascii_key }}"
     mode: '0644'
+  become: true
+
+- name: Convert Spotify key to binary format (dearmor)
+  ansible.builtin.command:
+    cmd: >
+      gpg --batch --dearmor
+      --yes
+      --output {{ essential_programs.debian_repos.custom.spotify.keyring }}
+      {{ essential_programs.debian_repos.custom.spotify.ascii_key }}
+  args:
+    creates: "{{ essential_programs.debian_repos.custom.spotify.keyring }}"
+  become: true
+
+- name: Remove temporary Spotify ASCII key file
+  ansible.builtin.file:
+    path: "{{ essential_programs.debian_repos.custom.spotify.ascii_key }}"
+    state: absent
+  become: true
+
+- name: Add Spotify APT repository (signed-by keyring)
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [signed-by={{ essential_programs.debian_repos.custom.spotify.keyring }}]
+      {{ essential_programs.debian_repos.custom.spotify.repo }}
+    filename: spotify
+    state: present
+    update_cache: false
   become: true
 
 # PPA Repos
