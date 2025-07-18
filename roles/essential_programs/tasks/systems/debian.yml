@@ -87,11 +87,24 @@
   become: true
 
 # PPA Repos
+- name: Determine upstream Ubuntu codename for PPAs
+  ansible.builtin.set_fact:
+    upstream_codename: >-
+      {{ upstream_codename_map[
+           (
+             ansible_facts['distribution']
+               | lower
+               | replace(' ', '_')
+           ) ~ '_' ~
+           ansible_facts.lsb.major_release
+         ]
+         | default(ansible_facts.lsb.codename) }}
+
 - name: Add PPA repositories
   ansible.builtin.apt_repository:
     repo: "{{ item }}"
     state: present
-    codename: "{{ ansible_facts.lsb.codename }}"
+    codename: "{{ upstream_codename }}"
     update_cache: false
   loop: "{{ essential_programs.debian_repos.ppa }}"
   become: true

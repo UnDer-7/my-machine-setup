@@ -46,3 +46,8 @@ essential_programs:
         key_url: "https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg"
         ascii_key: "/usr/share/keyrings/spotify-archive-keyring.asc"
         keyring: "/usr/share/keyrings/spotify-archive-keyring.gpg"
+
+upstream_codename_map:
+  linux_mint_20: focal
+  linux_mint_21: jammy
+  linux_mint_22: jammy

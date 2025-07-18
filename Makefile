@@ -28,7 +28,7 @@ all: help
 
 
 # ==================================================================================== #
-## ===== ANSIBLE =====
+## ===== INSTALL ANSIBLE =====
 # ==================================================================================== #
 ## install-ansible/apt-based: Install Ansible on apt-based distributions (Ubuntu, Debian, Linux Mint, ...)
 .PHONY: install-ansible/apt-based
@@ -42,8 +42,30 @@ install-ansible/apt-based:
 	@echo ">>> Finished installing Ansible via apt-based PPA"
 	ansible --version
 
-## bootstrap: Run the Ansible playbook to set up the local developer machine
+
+
+
+
+# ==================================================================================== #
+## ===== RUN ANSIBLE =====
+# ==================================================================================== #
+## bootstrap: Run the playbook to set up the local machine
 .PHONY: bootstrap
 bootstrap:
 	@echo ">>> Bootstrapping local developer machine with playbook $(ANSIBLE_PLAYBOOK)…"
+	@command -v ansible >/dev/null 2>&1 || { \
+	  echo "Error: Ansible not installed, please run 'make install-ansible/{{your-package-manager}}' first"; \
+	  exit 1; \
+	}
 	$(ANSIBLE) $(ANSIBLE_PLAYBOOK) -c local --ask-become-pass
+
+
+
+
+
+# ==================================================================================== #
+## ===== INSTALL AND RUN =====
+# ==================================================================================== #
+## setup/apt-based: Install Ansible on apt-based systems, then run bootstrap
+.PHONY: setup/apt-based
+setup/apt-based: install-ansible/apt-based bootstrap
