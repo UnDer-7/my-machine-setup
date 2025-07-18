@@ -20,20 +20,36 @@
   become: true
 
 # Repo: Spotify
-- name: Download Spotify signing key
+- name: Download Spotify signing key (ASCII)
   ansible.builtin.get_url:
     url: "{{ essential_programs.debian_repos.custom.spotify.key_url }}"
-    dest: "{{ essential_programs.debian_repos.custom.spotify.keyrings }}"
+    dest: "{{ essential_programs.debian_repos.custom.spotify.keyrings }}.asc"
     mode: '0644'
   become: true
 
-- name: Add Spotify apt repository (signed-by keyring)
-  ansible.builtin.apt_repository:
-    repo: |
-      deb [signed-by={{ essential_programs.debian_repos.custom.spotify.keyrings }}]
-      {{ essential_programs.debian_repos.custom.spotify.repo }}
-    filename: spotify
-    state: present
+- name: Convert Spotify GPG key to binary (dearmor)
+  ansible.builtin.command:
+    cmd: >
+      gpg --batch --dearmor
+      --yes
+      --output {{ essential_programs.debian_repos.custom.spotify.keyrings }}
+      {{ essential_programs.debian_repos.custom.spotify.keyrings }}.asc
+  args:
+    creates: "{{ essential_programs.debian_repos.custom.spotify.keyrings }}"
+  become: true
+
+- name: Remove temporary ASCII Spotify key
+  ansible.builtin.file:
+    path: "{{ essential_programs.debian_repos.custom.spotify.keyrings }}.asc"
+    state: absent
+  become: true
+
+- name: Add Spotify APT source list
+  ansible.builtin.copy:
+    dest: /etc/apt/sources.list.d/spotify.list
+    content: |
+      deb {{ essential_programs.debian_repos.custom.spotify.repo }}
+    mode: '0644'
   become: true
 
 # PPA Repos
