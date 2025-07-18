@@ -43,4 +43,4 @@ essential_programs:
         name: "spotify-client"
         repo: "https://repository.spotify.com stable non-free"
         key_url: "https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg"
-        keyrings: "/usr/share/keyrings/spotify-archive-keyring.gpg"
+        keyrings: "/etc/apt/trusted.gpg.d/spotify-archive-keyring.gpg"
