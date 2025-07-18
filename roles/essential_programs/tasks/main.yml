@@ -9,4 +9,3 @@
 - name: Include OS-specific install tasks
   ansible.builtin.include_tasks:
     file: "{{ os_specific_file }}"
-  tags: essential_programs
