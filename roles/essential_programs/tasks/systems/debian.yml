@@ -57,6 +57,8 @@
   ansible.builtin.apt_repository:
     repo: "{{ item }}"
     state: present
+    codename: "{{ ansible_facts.lsb.codename }}"
+    update_cache: false
   loop: "{{ essential_programs.debian_repos.ppa }}"
   become: true
 
