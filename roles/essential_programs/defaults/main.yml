@@ -1,0 +1,45 @@
+---
+
+# ToDo: cooler control
+
+essential_programs:
+  flatpak:
+    - app.zen_browser.zen
+    - com.discordapp.Discord
+    - tv.plex.PlexDesktop
+    - org.kde.kolourpaint
+    - com.bitwarden.desktop
+    - org.openrgb.OpenRGB
+  common:
+    - firefox
+    - steam
+    - copyq
+    - vlc
+    - qbittorrent
+    - solaar
+    - mediainfo-gui
+  arch:
+    aur:
+      - plex-desktop
+      - google-chrome
+      - zen-browser-bin
+      - spotify
+    official:
+      - kolourpaint
+      - bitwarden
+      - openrgb
+      - discord
+  debian_repos:
+    ppa:
+      - "ppa:qbittorrent-team/qbittorrent-stable"
+      - "ppa:solaar-unifying/stable"
+    custom:
+      google_chrome:
+        name: "google-chrome-stable"
+        repo: "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
+        key_url: "https://dl.google.com/linux/linux_signing_key.pub"
+      spotify:
+        name: "spotify-client"
+        repo: "deb https://repository.spotify.com stable non-free"
+        key_url: "https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg"
+

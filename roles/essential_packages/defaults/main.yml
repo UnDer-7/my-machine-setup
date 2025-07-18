@@ -7,3 +7,5 @@ essential_packages:
   - curl
   - htop
   - wget
+  - flatpak
+  - apt-transport-https

@@ -1,0 +1,73 @@
+---
+
+###################
+### Custom Repo ###
+###################
+# Repo: Google Chrome
+- name: Add GPG keys for Google Chrome repo
+  ansible.builtin.apt_key:
+    url: "{{ essential_programs.debian_repos.custom.google_chrome.key_url }}"
+    state: present
+
+- name: Add Google Chrome apt repository
+  ansible.builtin.apt_repository:
+    repo: "{{ essential_programs.debian_repos.custom.google_chrome.repo }}"
+    state: present
+
+# Repo: Spotify
+- name: Add GPG keys for Spotify repo
+  ansible.builtin.apt_key:
+    url: "{{ essential_programs.debian_repos.custom.spotify.key_url }}"
+    keyring: /etc/apt/trusted.gpg.d/spotify.gpg
+    state: present
+
+- name: Add Spotify apt repository
+  ansible.builtin.apt_repository:
+    repo: "{{ essential_programs.debian_repos.custom.spotify.repo }}"
+    filename: spotify
+    state: present
+
+# PPA Repos
+- name: Add PPA repositories
+  ansible.builtin.apt_repository:
+    repo: "{{ item }}"
+    state: present
+  loop: "{{ essential_programs.debian_repos.ppa }}"
+
+# Update
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+###################
+### Custom Apps ###
+###################
+- name: Install custom apps from debian repos
+  ansible.builtin.apt:
+    name: "{{ item.value.name }}"
+    state: present
+    install_recommends: true
+  become: true
+  loop: "{{ essential_programs.debian_repos.custom | dict2items }}"
+
+###################
+##### Flatpak #####
+###################
+- name: Install Flatpak apps
+  community.general.flatpak:
+    name: "{{ essential_programs.flatpak }}"
+    state: present
+    remote: flathub
+    method: system
+  become: true
+
+###################
+# Common Programs #
+###################
+- name: Install common programs on Debian-based
+  ansible.builtin.apt:
+    name: "{{ essential_programs.common }}"
+    state: present
+    install_recommends: false
+  become: true

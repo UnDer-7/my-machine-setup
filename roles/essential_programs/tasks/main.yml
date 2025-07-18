@@ -1,0 +1,12 @@
+---
+
+- name: Determine OS-specific install file
+  ansible.builtin.include_role:
+    name: helper_os_task_locator
+  vars:
+    my_role_name: essential_programs
+
+- name: Include OS-specific install tasks
+  ansible.builtin.include_tasks:
+    file: "{{ os_specific_file }}"
+  tags: essential_programs

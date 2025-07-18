@@ -11,6 +11,7 @@
     - zsh-themes
     - zsh_plugins
     - essential_packages
+    - essential_programs
 
   post_tasks:
     - name: Notify user to re-login for shell change to take effect

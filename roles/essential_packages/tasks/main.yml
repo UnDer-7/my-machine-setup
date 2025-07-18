@@ -1,7 +1,16 @@
 ---
+
 - name: Install essential packages
   ansible.builtin.package:
     name: "{{ essential_packages }}"
     state: present
   become: true
   ignore_errors: false
+
+- name: Add Flathub repository for Flatpak
+  community.general.flatpak_remote:
+    name: flathub
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+    method: system
+    state: present
+  become: true
