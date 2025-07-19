@@ -100,10 +100,10 @@
          ]
          | default(ansible_facts.lsb.codename) }}
 
-# qbittorrent-team/stable PPA
-- name: Download qbittorrent-team PPA public key (ASCII-armored)
+# qBittorrent stable PPA
+- name: Download qBittorrent PPA public key (ASCII-armored)
   ansible.builtin.get_url:
-    url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF4A5FD201B117B1C2AB590E2A1ACCAE4520EC6F6"
+    url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x401E8827DA4E93E44C7D01E6D35164147CA69FC4"
     dest: /usr/share/keyrings/qbittorrent-team-archive-keyring.asc
     mode: '0644'
   become: true
