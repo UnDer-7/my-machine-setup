@@ -3,6 +3,20 @@
 ###################
 ### Custom Repo ###
 ###################
+# PPA Repos
+- name: Determine upstream Ubuntu codename for PPAs
+  ansible.builtin.set_fact:
+    upstream_codename: >-
+      {{ upstream_codename_map[
+           (
+             ansible_facts['distribution']
+               | lower
+               | replace(' ', '_')
+           ) ~ '_' ~
+           ansible_facts.lsb.major_release
+         ]
+         | default(ansible_facts.lsb.codename) }}
+
 - name: Configure APT repositories in bulk
   ansible.builtin.include_tasks:
     file: add-debian-repo.yml
