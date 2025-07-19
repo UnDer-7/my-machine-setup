@@ -1,14 +1,19 @@
 ---
-- name: Remove old source list for {{ repo.id }}
+- name: Remove old source list (underscore) for {{ repo.id }}
   ansible.builtin.file:
     path: "/etc/apt/sources.list.d/{{ repo.id }}.list"
+    state: absent
+
+- name: Remove old source list (hyphen) for {{ repo.id }}
+  ansible.builtin.file:
+    path: "/etc/apt/sources.list.d/{{ repo.id | replace('_', '-') }}.list"
     state: absent
 
 - name: Download public key for {{ repo.id }}
   ansible.builtin.get_url:
     url: "{{ repo.key_url }}"
     dest: "{{ repo.ascii_key }}"
-    mode: '0644'
+    mode: "0644"
 
 - name: Convert ASCII key to GPG keyring for {{ repo.id }}
   ansible.builtin.command:
@@ -19,7 +24,7 @@
   args:
     creates: "{{ repo.keyring }}"
 
-- name: Remove ASCII key file for {{ repo.id }}
+- name: Remove temporary ASCII key file for {{ repo.id }}
   ansible.builtin.file:
     path: "{{ repo.ascii_key }}"
     state: absent
@@ -34,6 +39,6 @@
       {{ repo.repo }}
       {{ repo.codename | default("") }}
       {{ repo.components }}
-    filename: "{{ repo.id }}"
+    filename: "{{ repo.id | replace('_', '-') }}"
     state: present
     update_cache: false

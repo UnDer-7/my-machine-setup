@@ -3,6 +3,15 @@
 ###################
 ### Custom Repo ###
 ###################
+- name: Cleanup any legacy underscore-named repo lists
+  become: true
+  ansible.builtin.file:
+    path: "/etc/apt/sources.list.d/{{ item.id }}.list"
+    state: absent
+  loop: "{{ essential_programs.debian_repos }}"
+  loop_control:
+    label: "{{ item.id }}"
+
 # PPA Repos
 - name: Determine upstream Ubuntu codename for PPAs
   ansible.builtin.set_fact:
@@ -18,10 +27,8 @@
          | default(ansible_facts.lsb.codename) }}
 
 - name: Configure APT repositories in bulk
-  ansible.builtin.include_tasks:
-    file: add-debian-repo.yml
-    apply:
-      become: true
+  become: true
+  ansible.builtin.include_tasks: add-debian-repo.yml
   loop: "{{ essential_programs.debian_repos }}"
   loop_control:
     label: "{{ item.id }}"
