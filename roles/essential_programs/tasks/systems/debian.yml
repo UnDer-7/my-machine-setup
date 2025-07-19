@@ -12,8 +12,8 @@
 
 - name: Download Google Chrome public key (ASCII-armored)
   ansible.builtin.get_url:
-    url: "{{ essential_programs.debian_repos.custom.google_chrome.key_url }}"
-    dest: "{{ essential_programs.debian_repos.custom.google_chrome.ascii_key }}"
+    url: "{{ essential_programs.debian_repos.google_chrome.key_url }}"
+    dest: "{{ essential_programs.debian_repos.google_chrome.ascii_key }}"
     mode: '0644'
   become: true
 
@@ -22,15 +22,15 @@
     cmd: >
       gpg --batch --dearmor
       --yes
-      --output {{ essential_programs.debian_repos.custom.google_chrome.keyring }}
-      {{ essential_programs.debian_repos.custom.google_chrome.ascii_key }}
+      --output {{ essential_programs.debian_repos.google_chrome.keyring }}
+      {{ essential_programs.debian_repos.google_chrome.ascii_key }}
   args:
-    creates: "{{ essential_programs.debian_repos.custom.google_chrome.keyring }}"
+    creates: "{{ essential_programs.debian_repos.google_chrome.keyring }}"
   become: true
 
 - name: Remove temporary Google Chrome ASCII key file
   ansible.builtin.file:
-    path: "{{ essential_programs.debian_repos.custom.google_chrome.ascii_key }}"
+    path: "{{ essential_programs.debian_repos.google_chrome.ascii_key }}"
     state: absent
   become: true
 
@@ -38,8 +38,8 @@
   ansible.builtin.apt_repository:
     repo: >-
       deb [arch=amd64
-           signed-by={{ essential_programs.debian_repos.custom.google_chrome.keyring }}]
-      {{ essential_programs.debian_repos.custom.google_chrome.repo }}
+           signed-by={{ essential_programs.debian_repos.google_chrome.keyring }}]
+      {{ essential_programs.debian_repos.google_chrome.repo }}
     filename: google-chrome
     state: present
     update_cache: false
@@ -54,8 +54,8 @@
 
 - name: Download Spotify public key (ASCII-armored)
   ansible.builtin.get_url:
-    url: "{{ essential_programs.debian_repos.custom.spotify.key_url }}"
-    dest: "{{ essential_programs.debian_repos.custom.spotify.ascii_key }}"
+    url: "{{ essential_programs.debian_repos.spotify.key_url }}"
+    dest: "{{ essential_programs.debian_repos.spotify.ascii_key }}"
     mode: '0644'
   become: true
 
@@ -64,23 +64,23 @@
     cmd: >
       gpg --batch --dearmor
       --yes
-      --output {{ essential_programs.debian_repos.custom.spotify.keyring }}
-      {{ essential_programs.debian_repos.custom.spotify.ascii_key }}
+      --output {{ essential_programs.debian_repos.spotify.keyring }}
+      {{ essential_programs.debian_repos.spotify.ascii_key }}
   args:
-    creates: "{{ essential_programs.debian_repos.custom.spotify.keyring }}"
+    creates: "{{ essential_programs.debian_repos.spotify.keyring }}"
   become: true
 
 - name: Remove temporary Spotify ASCII key file
   ansible.builtin.file:
-    path: "{{ essential_programs.debian_repos.custom.spotify.ascii_key }}"
+    path: "{{ essential_programs.debian_repos.spotify.ascii_key }}"
     state: absent
   become: true
 
 - name: Add Spotify APT repository (signed-by keyring)
   ansible.builtin.apt_repository:
     repo: >-
-      deb [signed-by={{ essential_programs.debian_repos.custom.spotify.keyring }}]
-      {{ essential_programs.debian_repos.custom.spotify.repo }}
+      deb [signed-by={{ essential_programs.debian_repos.spotify.keyring }}]
+      {{ essential_programs.debian_repos.spotify.repo }}
     filename: spotify
     state: present
     update_cache: false
@@ -103,8 +103,8 @@
 # qBittorrent stable PPA
 - name: Download qBittorrent PPA public key (ASCII-armored)
   ansible.builtin.get_url:
-    url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x401E8827DA4E93E44C7D01E6D35164147CA69FC4"
-    dest: /usr/share/keyrings/qbittorrent-team-archive-keyring.asc
+    url: "{{ essential_programs.debian_repos.qbittorrent.key_url }}"
+    dest: "{{ essential_programs.debian_repos.qbittorrent.ascii_key }}"
     mode: '0644'
   become: true
 
@@ -113,23 +113,23 @@
     cmd: >
       gpg --batch --dearmor
       --yes
-      --output /usr/share/keyrings/qbittorrent-team-archive-keyring.gpg
-      /usr/share/keyrings/qbittorrent-team-archive-keyring.asc
+      --output {{ essential_programs.debian_repos.qbittorrent.keyring }}
+      {{ essential_programs.debian_repos.qbittorrent.ascii_key }}
   args:
-    creates: /usr/share/keyrings/qbittorrent-team-archive-keyring.gpg
+    creates: "{{ essential_programs.debian_repos.qbittorrent.keyring }}"
   become: true
 
 - name: Remove temporary qbittorrent ASCII key file
   ansible.builtin.file:
-    path: /usr/share/keyrings/qbittorrent-team-archive-keyring.asc
+    path: "{{ essential_programs.debian_repos.qbittorrent.ascii_key }}"
     state: absent
   become: true
 
 - name: Add qbittorrent-team PPA repository (signed-by dedicated keyring)
   ansible.builtin.apt_repository:
     repo: >-
-      deb [signed-by=/usr/share/keyrings/qbittorrent-team-archive-keyring.gpg]
-      https://ppa.launchpadcontent.net/qbittorrent-team/qbittorrent-stable/ubuntu
+      deb [signed-by={{ essential_programs.debian_repos.qbittorrent.keyring }}]
+      {{ essential_programs.debian_repos.qbittorrent.repo }}
       {{ upstream_codename }} main
     filename: qbittorrent-team-qbittorrent-stable
     state: present
@@ -139,8 +139,8 @@
 # solaar-unifying/stable PPA
 - name: Download solaar-unifying PPA public key (ASCII-armored)
   ansible.builtin.get_url:
-    url: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x643FF34AF9151DC814DD3A1B2303D595EE907473
-    dest: /usr/share/keyrings/solaar-unifying-archive-keyring.asc
+    url: "{{ essential_programs.debian_repos.solaar.key_url }}"
+    dest: "{{ essential_programs.debian_repos.solaar.ascii_key }}"
     mode: '0644'
   become: true
 
@@ -149,23 +149,23 @@
     cmd: >
       gpg --batch --dearmor
       --yes
-      --output /usr/share/keyrings/solaar-unifying-archive-keyring.gpg
-      /usr/share/keyrings/solaar-unifying-archive-keyring.asc
+      --output {{ essential_programs.debian_repos.solaar.keyring }}
+      {{ essential_programs.debian_repos.solaar.ascii_key }}
   args:
-    creates: /usr/share/keyrings/solaar-unifying-archive-keyring.gpg
+    creates: "{{ essential_programs.debian_repos.solaar.keyring }}"
   become: true
 
 - name: Remove temporary solaar ASCII key file
   ansible.builtin.file:
-    path: /usr/share/keyrings/solaar-unifying-archive-keyring.asc
+    path: "{{ essential_programs.debian_repos.solaar.ascii_key }}"
     state: absent
   become: true
 
 - name: Add solaar-unifying PPA repository (signed-by dedicated keyring)
   ansible.builtin.apt_repository:
     repo: >-
-      deb [signed-by=/usr/share/keyrings/solaar-unifying-archive-keyring.gpg]
-      https://ppa.launchpadcontent.net/solaar-unifying/stable/ubuntu
+      deb [signed-by={{ essential_programs.debian_repos.solaar.keyring }}]
+      {{ essential_programs.debian_repos.solaar.repo }}
       {{ upstream_codename }} main
     filename: solaar-unifying-stable
     state: present
@@ -188,7 +188,7 @@
     state: present
     install_recommends: true
   become: true
-  loop: "{{ essential_programs.debian_repos.custom | dict2items }}"
+  loop: "{{ essential_programs.debian_repos | dict2items }}"
 
 ###################
 ##### Flatpak #####

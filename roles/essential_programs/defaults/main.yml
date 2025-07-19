@@ -1,6 +1,6 @@
 ---
 
-# ToDo: cooler control
+# ToDo: cooler control, activiy watcher
 
 essential_programs:
   flatpak:
@@ -15,8 +15,6 @@ essential_programs:
     - steam
     - copyq
     - vlc
-    - qbittorrent
-    - solaar
     - mediainfo-gui
   arch:
     aur:
@@ -29,23 +27,33 @@ essential_programs:
       - bitwarden
       - openrgb
       - discord
+      - qbittorrent
+      - solaar
   debian_repos:
-    ppa:
-      - "ppa:qbittorrent-team/qbittorrent-stable"
-      - "ppa:solaar-unifying/stable"
-    custom:
-      google_chrome:
-        name: "google-chrome-stable"
-        repo: "http://dl.google.com/linux/chrome/deb/ stable main"
-        key_url: "https://dl.google.com/linux/linux_signing_key.pub"
-        ascii_key: "/usr/share/keyrings/google-chrome-archive-keyring.asc"
-        keyring: "/usr/share/keyrings/google-chrome-archive-keyring.gpg"
-      spotify:
-        name: "spotify-client"
-        repo: "https://repository.spotify.com stable non-free"
-        key_url: "https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg"
-        ascii_key: "/usr/share/keyrings/spotify-archive-keyring.asc"
-        keyring: "/usr/share/keyrings/spotify-archive-keyring.gpg"
+    google_chrome:
+      name: "google-chrome-stable"
+      repo: "http://dl.google.com/linux/chrome/deb/ stable main"
+      key_url: "https://dl.google.com/linux/linux_signing_key.pub"
+      ascii_key: "/usr/share/keyrings/google-chrome-archive-keyring.asc"
+      keyring: "/usr/share/keyrings/google-chrome-archive-keyring.gpg"
+    spotify:
+      name: "spotify-client"
+      repo: "https://repository.spotify.com stable non-free"
+      key_url: "https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg"
+      ascii_key: "/usr/share/keyrings/spotify-archive-keyring.asc"
+      keyring: "/usr/share/keyrings/spotify-archive-keyring.gpg"
+    qbittorrent:
+      name: "qbittorrent"
+      repo: "https://ppa.launchpadcontent.net/qbittorrent-team/qbittorrent-stable/ubuntu"
+      key_url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x401E8827DA4E93E44C7D01E6D35164147CA69"
+      ascii_key: "/usr/share/keyrings/qbittorrent-team-archive-keyring.asc"
+      keyring: "/usr/share/keyrings/qbittorrent-team-archive-keyring.gpg"
+    solaar:
+      name: "solaar"
+      repo: "https://ppa.launchpadcontent.net/solaar-unifying/stable/ubuntu"
+      key_url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x643FF34AF9151DC814DD3A1B2303D595EE907473"
+      ascii_key: "/usr/share/keyrings/solaar-unifying-archive-keyring.asc"
+      keyring: "/usr/share/keyrings/solaar-unifying-archive-keyring.gpg"
 
 upstream_codename_map:
   linux_mint_20: focal
