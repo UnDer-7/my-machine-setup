@@ -27,8 +27,10 @@
          | default(ansible_facts.lsb.codename) }}
 
 - name: Configure APT repositories in bulk
-  become: true
-  ansible.builtin.include_tasks: add-debian-repo.yml
+  ansible.builtin.include_tasks:
+    file: add-debian-repo.yml
+    apply:
+      become: true
   loop: "{{ essential_programs.debian_repos }}"
   loop_control:
     label: "{{ item.id }}"
