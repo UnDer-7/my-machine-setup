@@ -19,15 +19,15 @@
 
 # Add repos
 - name: Configure APT repositories in bulk
+  become: true
   loop: "{{ essential_programs.debian_repos }}"
   loop_control:
     label: "{{ item.id }}"
-  become: true
   block:
     - name: Remove old source list for {{ item.id }}
       ansible.builtin.file:
-      path: "/etc/apt/sources.list.d/{{ item.id }}.list"
-      state: absent
+        path: "/etc/apt/sources.list.d/{{ item.id }}.list"
+        state: absent
 
     - name: Download public key for {{ item.id }}
       ansible.builtin.get_url:
