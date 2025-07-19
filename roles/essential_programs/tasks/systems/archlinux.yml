@@ -1,14 +1,14 @@
 ---
 
 - name: Install common essential programs on Arch Linux
-  ansible.builtin.pacman:
+  community.general.pacman:
     name: "{{ essential_programs.common + essential_programs.arch.official }}"
     state: present
     update_cache: true
   become: true
 
 - name: Ensure AUR helper is installed
-  ansible.builtin.pacman:
+  community.general.pacman:
     name: yay
     state: present
   become: true

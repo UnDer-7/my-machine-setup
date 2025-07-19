@@ -94,7 +94,8 @@ Here are two ways to use this helper:
            - name: Include OS-specific update tasks
              ansible.builtin.include_tasks:
                file: "{{ os_specific_file }}"
-             become: true
+               apply:
+                  become: true
    ```
 
 2. **Using a custom `include_dir` (e.g. `font_setup`):**

@@ -3,63 +3,17 @@
 ###################
 ### Custom Repo ###
 ###################
-# PPA Repos
-- name: Determine upstream Ubuntu codename for PPAs
-  ansible.builtin.set_fact:
-    upstream_codename: >-
-      {{ upstream_codename_map[
-           (
-             ansible_facts['distribution']
-               | lower
-               | replace(' ', '_')
-           ) ~ '_' ~
-           ansible_facts.lsb.major_release
-         ]
-         | default(ansible_facts.lsb.codename) }}
-
-# Add repos
 - name: Configure APT repositories in bulk
   become: true
+  ansible.builtin.include_tasks:
+    file: add-debian-repo.yml
+    apply:
+      become: true
   loop: "{{ essential_programs.debian_repos }}"
   loop_control:
     label: "{{ item.id }}"
-  block:
-    - name: Remove old source list for {{ item.id }}
-      ansible.builtin.file:
-        path: "/etc/apt/sources.list.d/{{ item.id }}.list"
-        state: absent
-
-    - name: Download public key for {{ item.id }}
-      ansible.builtin.get_url:
-        url: "{{ item.key_url }}"
-        dest: "{{ item.ascii_key }}"
-        mode: '0644'
-
-    - name: Convert ASCII key to GPG keyring for {{ item.id }}
-      ansible.builtin.command:
-        cmd: >
-          gpg --batch --dearmor --yes
-          --output {{ item.keyring }}
-          {{ item.ascii_key }}
-      args:
-        creates: "{{ item.keyring }}"
-
-    - name: Remove ASCII key file for {{ item.id }}
-      ansible.builtin.file:
-        path: "{{ item.ascii_key }}"
-        state: absent
-
-    - name: Add APT repository for {{ item.id }}
-      ansible.builtin.apt_repository:
-        repo: >-
-          deb [{{ item.arch is defined and ("arch=" ~ item.arch) or "" }}
-               signed-by={{ item.keyring }}]
-          {{ item.repo }}
-          {{ item.codename | default("") }}
-          {{ item.components }}
-        filename: "{{ item.id }}"
-        state: present
-        update_cache: false
+  vars:
+    repo: "{{ item }}"
 
 # Update
 - name: Update apt cache

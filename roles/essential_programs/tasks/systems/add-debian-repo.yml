@@ -1,0 +1,39 @@
+---
+- name: Remove old source list for {{ repo.id }}
+  ansible.builtin.file:
+    path: "/etc/apt/sources.list.d/{{ repo.id }}.list"
+    state: absent
+
+- name: Download public key for {{ repo.id }}
+  ansible.builtin.get_url:
+    url: "{{ repo.key_url }}"
+    dest: "{{ repo.ascii_key }}"
+    mode: '0644'
+
+- name: Convert ASCII key to GPG keyring for {{ repo.id }}
+  ansible.builtin.command:
+    cmd: >
+      gpg --batch --dearmor --yes
+      --output {{ repo.keyring }}
+      {{ repo.ascii_key }}
+  args:
+    creates: "{{ repo.keyring }}"
+
+- name: Remove ASCII key file for {{ repo.id }}
+  ansible.builtin.file:
+    path: "{{ repo.ascii_key }}"
+    state: absent
+
+- name: Add APT repository for {{ repo.id }}
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [
+        {{ repo.arch is defined and ("arch="~repo.arch) or "" }}
+        signed-by={{ repo.keyring }}
+      ]
+      {{ repo.repo }}
+      {{ repo.codename | default("") }}
+      {{ repo.components }}
+    filename: "{{ repo.id }}"
+    state: present
+    update_cache: false
