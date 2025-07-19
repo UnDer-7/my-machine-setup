@@ -4,7 +4,6 @@
 ### Custom Repo ###
 ###################
 - name: Configure APT repositories in bulk
-  become: true
   ansible.builtin.include_tasks:
     file: add-debian-repo.yml
     apply:
