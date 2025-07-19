@@ -103,9 +103,7 @@
 # qbittorrent-team/stable PPA
 - name: Download qbittorrent-team PPA public key (ASCII-armored)
   ansible.builtin.get_url:
-    url: >-
-      https://keyserver.ubuntu.com/pks/lookup
-      ?op=get&search=0xF4A5FD201B117B1C2AB590E2A1ACCAE4520EC6F6
+    url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF4A5FD201B117B1C2AB590E2A1ACCAE4520EC6F6"
     dest: /usr/share/keyrings/qbittorrent-team-archive-keyring.asc
     mode: '0644'
   become: true
@@ -141,9 +139,7 @@
 # solaar-unifying/stable PPA
 - name: Download solaar-unifying PPA public key (ASCII-armored)
   ansible.builtin.get_url:
-    url: >-
-      https://keyserver.ubuntu.com/pks/lookup
-      ?op=get&search=0x643FF34AF9151DC814DD3A1B2303D595EE907473
+    url: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x643FF34AF9151DC814DD3A1B2303D595EE907473
     dest: /usr/share/keyrings/solaar-unifying-archive-keyring.asc
     mode: '0644'
   become: true
