@@ -111,35 +111,54 @@
     path: "{{ jetbrains_install_dir }}/jetbrains-toolbox"
     state: absent
 
-- name: Extract JetBrains Toolbox archive
+- name: Create temporary extraction directory
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: jetbrains_extract
+  register: temp_extract_dir
+
+- name: Extract JetBrains Toolbox archive to temp directory
   ansible.builtin.unarchive:
     src: "/tmp/{{ jetbrains_archive }}"
-    dest: "{{ jetbrains_install_dir }}"
+    dest: "{{ temp_extract_dir.path }}"
     remote_src: true
-    extra_opts:
-      - "--strip-components=1"
 
 - name: List extracted files for debugging
   ansible.builtin.find:
-    paths: "{{ jetbrains_install_dir }}"
+    paths: "{{ temp_extract_dir.path }}"
     file_type: file
+    recurse: true
   register: extracted_files
 
 - name: Debug extracted files
   ansible.builtin.debug:
     var: extracted_files.files
 
+- name: Find JetBrains Toolbox binary
+  ansible.builtin.find:
+    paths: "{{ temp_extract_dir.path }}"
+    patterns: "jetbrains-toolbox"
+    file_type: file
+    recurse: true
+  register: jetbrains_binary
+
+- name: Copy JetBrains Toolbox binary to install directory
+  ansible.builtin.copy:
+    src: "{{ jetbrains_binary.files[0].path }}"
+    dest: "{{ jetbrains_install_dir }}/jetbrains-toolbox"
+    mode: '0755'
+    remote_src: true
+  when: jetbrains_binary.files | length > 0
+
+- name: Clean up temporary extraction directory
+  ansible.builtin.file:
+    path: "{{ temp_extract_dir.path }}"
+    state: absent
+
 - name: Remove downloaded archive
   ansible.builtin.file:
     path: "/tmp/{{ jetbrains_archive }}"
     state: absent
-
-- name: Make JetBrains Toolbox executable
-  ansible.builtin.file:
-    path: "{{ extracted_files.files[0].path }}"
-    mode: '0755'
-    state: file
-  when: extracted_files.files | length > 0
 
 - name: Create symlink directory
   ansible.builtin.file:
@@ -154,7 +173,6 @@
 
 - name: Create JetBrains Toolbox symlink
   ansible.builtin.file:
-    src: "{{ extracted_files.files[0].path }}"
+    src: "{{ jetbrains_install_dir }}/jetbrains-toolbox"
     dest: "{{ jetbrains_symlink_dir }}/jetbrains-toolbox"
     state: link
-  when: extracted_files.files | length > 0
