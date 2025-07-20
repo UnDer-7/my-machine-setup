@@ -118,7 +118,6 @@
     remote_src: true
     extra_opts:
       - "--strip-components=1"
-    mode: '0755'
 
 - name: Remove downloaded archive
   ansible.builtin.file:
@@ -129,6 +128,7 @@
   ansible.builtin.file:
     path: "{{ jetbrains_install_dir }}/jetbrains-toolbox"
     mode: '0755'
+    state: file
 
 - name: Create symlink directory
   ansible.builtin.file:
