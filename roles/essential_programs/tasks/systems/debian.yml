@@ -99,14 +99,14 @@
 
 - name: Create JetBrains Toolbox install dir
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.local/share/JetBrains/Toolbox/bin"
+    path: "{{ ansible_env.HOME }}/.local/share/JetBrains/Toolbox"
     state: directory
     mode: '0755'
 
 - name: Extract JetBrains Toolbox
   ansible.builtin.unarchive:
     src: "/tmp/{{ toolbox_archive_filename }}"
-    dest: "{{ ansible_env.HOME }}/.local/share/JetBrains/Toolbox/bin"
+    dest: "{{ ansible_env.HOME }}/.local/share/JetBrains/Toolbox"
     remote_src: true
     extra_opts: ['--strip-components=1']
 
