@@ -22,6 +22,7 @@ essential_programs:
       - google-chrome
       - zen-browser-bin
       - spotify
+      - jetbrains-toolbox
     official:
       - kolourpaint
       - bitwarden

@@ -72,3 +72,77 @@
     state: present
     install_recommends: false
   become: true
+
+#######################
+## JetBrains Toolbox ##
+#######################
+# Source: https://github.com/nagygergo/jetbrains-toolbox-install
+- name: Get latest JetBrains Toolbox download URL
+  ansible.builtin.uri:
+    url: "https://data.services.jetbrains.com/products/releases?code=TBA&latest=true&type=release"
+    method: GET
+    return_content: true
+  register: jetbrains_api_response
+
+- name: Extract download URL from API response
+  ansible.builtin.set_fact:
+    jetbrains_download_url: "{{ jetbrains_api_response.json.TBA[0].downloads.linux.link }}"
+
+- name: Set JetBrains Toolbox paths
+  ansible.builtin.set_fact:
+    jetbrains_archive: "{{ jetbrains_download_url | basename }}"
+    jetbrains_install_dir: "{{ ansible_env.HOME }}/.local/share/JetBrains/Toolbox/bin"
+    jetbrains_symlink_dir: "{{ ansible_env.HOME }}/.local/bin"
+
+- name: Download JetBrains Toolbox archive
+  ansible.builtin.get_url:
+    url: "{{ jetbrains_download_url }}"
+    dest: "/tmp/{{ jetbrains_archive }}"
+    mode: '0644'
+
+- name: Create JetBrains Toolbox install directory
+  ansible.builtin.file:
+    path: "{{ jetbrains_install_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Remove existing JetBrains Toolbox binary
+  ansible.builtin.file:
+    path: "{{ jetbrains_install_dir }}/jetbrains-toolbox"
+    state: absent
+
+- name: Extract JetBrains Toolbox archive
+  ansible.builtin.unarchive:
+    src: "/tmp/{{ jetbrains_archive }}"
+    dest: "{{ jetbrains_install_dir }}"
+    remote_src: true
+    extra_opts:
+      - "--strip-components=1"
+    mode: '0755'
+
+- name: Remove downloaded archive
+  ansible.builtin.file:
+    path: "/tmp/{{ jetbrains_archive }}"
+    state: absent
+
+- name: Make JetBrains Toolbox executable
+  ansible.builtin.file:
+    path: "{{ jetbrains_install_dir }}/jetbrains-toolbox"
+    mode: '0755'
+
+- name: Create symlink directory
+  ansible.builtin.file:
+    path: "{{ jetbrains_symlink_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Remove existing symlink
+  ansible.builtin.file:
+    path: "{{ jetbrains_symlink_dir }}/jetbrains-toolbox"
+    state: absent
+
+- name: Create JetBrains Toolbox symlink
+  ansible.builtin.file:
+    src: "{{ jetbrains_install_dir }}/jetbrains-toolbox"
+    dest: "{{ jetbrains_symlink_dir }}/jetbrains-toolbox"
+    state: link
