@@ -115,6 +115,12 @@
     path: "{{ ansible_env.HOME }}/.local/share/JetBrains/Toolbox/bin/jetbrains-toolbox"
     mode: '0755'
 
+- name: Ensure user local bin directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.local/bin"
+    state: directory
+    mode: '0755'
+
 - name: Symlink jetbrains-toolbox to local bin
   ansible.builtin.file:
     src: "{{ ansible_env.HOME }}/.local/share/JetBrains/Toolbox/bin/jetbrains-toolbox"
