@@ -85,8 +85,7 @@
 
 - name: Set JetBrains Toolbox download URL
   ansible.builtin.set_fact:
-    jetbrains_toolbox_url: >-
-      {{ jetbrains_toolbox_release.json.TBA[0].downloads.linux }}
+    jetbrains_toolbox_url: "{{ jetbrains_toolbox_release.json.TBA[0].downloads.linux.link }}"
 
 - name: Determine archive filename from URL
   ansible.builtin.set_fact:
