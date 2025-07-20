@@ -87,14 +87,14 @@
   ansible.builtin.set_fact:
     jetbrains_toolbox_url: "{{ jetbrains_toolbox_release.json.TBA[0].downloads.linux.link }}"
 
-- name: Determine archive filename from URL
+- name: Determine JetBrains Toolbox archive tmp path from URL
   ansible.builtin.set_fact:
-    toolbox_archive_filename: "{{ jetbrains_toolbox_url | basename }}"
+    toolbox_archive_tmp_path: "/tmp/{{ jetbrains_toolbox_url | basename }}"
 
 - name: Download JetBrains Toolbox archive
   ansible.builtin.get_url:
     url: "{{ jetbrains_toolbox_url }}"
-    dest: "{{ essential_programs.debian.jetbrains_toolbox.tmp_path }}"
+    dest: "{{ toolbox_archive_tmp_path }}"
     mode: '0644'
 
 - name: Create JetBrains Toolbox install dir
@@ -105,12 +105,12 @@
 
 - name: Extract JetBrains Toolbox
   ansible.builtin.unarchive:
-    src: "{{ essential_programs.debian.jetbrains_toolbox.tmp_path }}"
+    src: "{{ toolbox_archive_tmp_path }}"
     dest: "{{ essential_programs.debian.jetbrains_toolbox.install_path }}"
     remote_src: true
     extra_opts: ['--strip-components=1']
 
-- name: Make toolbox binary executable
+- name: Make JetBrains Toolbox binary executable
   ansible.builtin.file:
     path: "{{ essential_programs.debian.jetbrains_toolbox.executable_path }}"
     mode: '0755'
@@ -121,15 +121,15 @@
     state: directory
     mode: '0755'
 
-- name: Symlink jetbrains-toolbox to local bin
+- name: Symlink JetBrains Toolbox to local bin
   ansible.builtin.file:
     src: "{{ essential_programs.debian.jetbrains_toolbox.executable_path }}"
     dest: "{{ ansible_env.HOME }}/.local/bin/jetbrains-toolbox"
     state: link
 
-- name: Clean up downloaded archive
+- name: Clean up JetBrains Toolbox downloaded archive
   ansible.builtin.file:
-    path: "{{ essential_programs.debian.jetbrains_toolbox.tmp_path }}"
+    path: "{{ toolbox_archive_tmp_path }}"
     state: absent
 
 ### Register JetBrains Toolbox in Desktop
@@ -148,7 +148,7 @@
     toolbox_bin: "{{ essential_programs.debian.jetbrains_toolbox.executable_path }}"
     toolbox_icon: "{{ essential_programs.debian.jetbrains_toolbox.install_path }}/bin/toolbox-tray-color.png"
 
-- name: Update desktop database (optional)
+- name: Update desktop database
   ansible.builtin.command:
     cmd: update-desktop-database "{{ essential_programs.debian.jetbrains_toolbox.applications_path }}"
   changed_when: false
