@@ -119,6 +119,16 @@
     extra_opts:
       - "--strip-components=1"
 
+- name: List extracted files for debugging
+  ansible.builtin.find:
+    paths: "{{ jetbrains_install_dir }}"
+    file_type: file
+  register: extracted_files
+
+- name: Debug extracted files
+  ansible.builtin.debug:
+    var: extracted_files.files
+
 - name: Remove downloaded archive
   ansible.builtin.file:
     path: "/tmp/{{ jetbrains_archive }}"
@@ -126,9 +136,10 @@
 
 - name: Make JetBrains Toolbox executable
   ansible.builtin.file:
-    path: "{{ jetbrains_install_dir }}/jetbrains-toolbox"
+    path: "{{ extracted_files.files[0].path }}"
     mode: '0755'
     state: file
+  when: extracted_files.files | length > 0
 
 - name: Create symlink directory
   ansible.builtin.file:
@@ -143,6 +154,7 @@
 
 - name: Create JetBrains Toolbox symlink
   ansible.builtin.file:
-    src: "{{ jetbrains_install_dir }}/jetbrains-toolbox"
+    src: "{{ extracted_files.files[0].path }}"
     dest: "{{ jetbrains_symlink_dir }}/jetbrains-toolbox"
     state: link
+  when: extracted_files.files | length > 0
