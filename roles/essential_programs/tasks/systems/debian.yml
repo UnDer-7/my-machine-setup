@@ -77,102 +77,52 @@
 ## JetBrains Toolbox ##
 #######################
 # Source: https://github.com/nagygergo/jetbrains-toolbox-install
-- name: Get latest JetBrains Toolbox download URL
+- name: Fetch JetBrains Toolbox release info
   ansible.builtin.uri:
     url: "https://data.services.jetbrains.com/products/releases?code=TBA&latest=true&type=release"
-    method: GET
     return_content: true
-  register: jetbrains_api_response
+  register: jetbrains_toolbox_release
 
-- name: Extract download URL from API response
+- name: Set JetBrains Toolbox download URL
   ansible.builtin.set_fact:
-    jetbrains_download_url: "{{ jetbrains_api_response.json.TBA[0].downloads.linux.link }}"
+    jetbrains_toolbox_url: >-
+      {{ jetbrains_toolbox_release.json.TBA[0].downloads.linux }}
 
-- name: Set JetBrains Toolbox paths
+- name: Determine archive filename from URL
   ansible.builtin.set_fact:
-    jetbrains_archive: "{{ jetbrains_download_url | basename }}"
-    jetbrains_install_dir: "{{ ansible_env.HOME }}/.local/share/JetBrains/Toolbox/bin"
-    jetbrains_symlink_dir: "{{ ansible_env.HOME }}/.local/bin"
+    toolbox_archive_filename: "{{ jetbrains_toolbox_url | basename }}"
 
 - name: Download JetBrains Toolbox archive
   ansible.builtin.get_url:
-    url: "{{ jetbrains_download_url }}"
-    dest: "/tmp/{{ jetbrains_archive }}"
+    url: "{{ jetbrains_toolbox_url }}"
+    dest: "/tmp/{{ toolbox_archive_filename }}"
     mode: '0644'
 
-- name: Create JetBrains Toolbox install directory
+- name: Create JetBrains Toolbox install dir
   ansible.builtin.file:
-    path: "{{ jetbrains_install_dir }}"
+    path: "{{ ansible_env.HOME }}/.local/share/JetBrains/Toolbox/bin"
     state: directory
     mode: '0755'
 
-- name: Remove existing JetBrains Toolbox binary
-  ansible.builtin.file:
-    path: "{{ jetbrains_install_dir }}/jetbrains-toolbox"
-    state: absent
-
-- name: Create temporary extraction directory
-  ansible.builtin.tempfile:
-    state: directory
-    suffix: jetbrains_extract
-  register: temp_extract_dir
-
-- name: Extract JetBrains Toolbox archive to temp directory
+- name: Extract JetBrains Toolbox
   ansible.builtin.unarchive:
-    src: "/tmp/{{ jetbrains_archive }}"
-    dest: "{{ temp_extract_dir.path }}"
+    src: "/tmp/{{ toolbox_archive_filename }}"
+    dest: "{{ ansible_env.HOME }}/.local/share/JetBrains/Toolbox/bin"
     remote_src: true
+    extra_opts: ['--strip-components=1']
 
-- name: List extracted files for debugging
-  ansible.builtin.find:
-    paths: "{{ temp_extract_dir.path }}"
-    file_type: file
-    recurse: true
-  register: extracted_files
-
-- name: Debug extracted files
-  ansible.builtin.debug:
-    var: extracted_files.files
-
-- name: Find JetBrains Toolbox binary
-  ansible.builtin.find:
-    paths: "{{ temp_extract_dir.path }}"
-    patterns: "jetbrains-toolbox"
-    file_type: file
-    recurse: true
-  register: jetbrains_binary
-
-- name: Copy JetBrains Toolbox binary to install directory
-  ansible.builtin.copy:
-    src: "{{ jetbrains_binary.files[0].path }}"
-    dest: "{{ jetbrains_install_dir }}/jetbrains-toolbox"
-    mode: '0755'
-    remote_src: true
-  when: jetbrains_binary.files | length > 0
-
-- name: Clean up temporary extraction directory
+- name: Make toolbox binary executable
   ansible.builtin.file:
-    path: "{{ temp_extract_dir.path }}"
-    state: absent
-
-- name: Remove downloaded archive
-  ansible.builtin.file:
-    path: "/tmp/{{ jetbrains_archive }}"
-    state: absent
-
-- name: Create symlink directory
-  ansible.builtin.file:
-    path: "{{ jetbrains_symlink_dir }}"
-    state: directory
+    path: "{{ ansible_env.HOME }}/.local/share/JetBrains/Toolbox/bin/jetbrains-toolbox"
     mode: '0755'
 
-- name: Remove existing symlink
+- name: Symlink jetbrains-toolbox to local bin
   ansible.builtin.file:
-    path: "{{ jetbrains_symlink_dir }}/jetbrains-toolbox"
-    state: absent
-
-- name: Create JetBrains Toolbox symlink
-  ansible.builtin.file:
-    src: "{{ jetbrains_install_dir }}/jetbrains-toolbox"
-    dest: "{{ jetbrains_symlink_dir }}/jetbrains-toolbox"
+    src: "{{ ansible_env.HOME }}/.local/share/JetBrains/Toolbox/bin/jetbrains-toolbox"
+    dest: "{{ ansible_env.HOME }}/.local/bin/jetbrains-toolbox"
     state: link
+
+- name: Clean up downloaded archive
+  ansible.builtin.file:
+    path: "/tmp/{{ toolbox_archive_filename }}"
+    state: absent
