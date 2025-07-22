@@ -23,6 +23,7 @@ essential_programs:
       - zen-browser-bin
       - spotify
       - jetbrains-toolbox
+      - mockoon-bin
     official:
       - kolourpaint
       - bitwarden

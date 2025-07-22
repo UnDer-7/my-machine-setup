@@ -152,3 +152,39 @@
   ansible.builtin.command:
     cmd: update-desktop-database "{{ essential_programs.debian.jetbrains_toolbox.applications_path }}"
   changed_when: false
+
+###############
+## Mockoon  ##
+###############
+- name: Get latest Mockoon release from GitHub API
+  ansible.builtin.uri:
+    url: "https://api.github.com/repos/mockoon/mockoon/releases/latest"
+    method: GET
+    return_content: true
+  register: mockoon_release_info
+
+- name: Set mockoon versions name
+  ansible.builtin.set_fact:
+    mockoon_version: "{{ mockoon_release_info.json.tag_name }}"
+    mockoon_version_simplified: "{{ mockoon_release_info.json.tag_name | regex_replace('^v', '') }}"
+
+- name: Set Mockoon download URL
+  ansible.builtin.set_fact:
+    mockoon_deb_url: "https://github.com/mockoon/mockoon/releases/download/{{ mockoon_version }}/mockoon-{{ mockoon_version_simplified }}.amd64.deb"
+
+- name: Download Mockoon .deb package
+  ansible.builtin.get_url:
+    url: "{{ mockoon_deb_url }}"
+    dest: "/tmp/mockoon-{{ mockoon_version_simplified }}.amd64.deb"
+    mode: '0644'
+
+- name: Install Mockoon from .deb package
+  ansible.builtin.apt:
+    deb: "/tmp/mockoon-{{ mockoon_version_simplified }}.amd64.deb"
+    state: present
+  become: true
+
+- name: Remove downloaded Mockoon .deb package
+  ansible.builtin.file:
+    path: "/tmp/mockoon-{{ mockoon_version_simplified }}.amd64.deb"
+    state: absent
