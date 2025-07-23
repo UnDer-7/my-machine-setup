@@ -73,6 +73,13 @@ essential_programs:
       executable_path: "{{ ansible_env.HOME }}/.local/share/JetBrains/Toolbox/bin/jetbrains-toolbox"
       applications_path: "{{ ansible_env.HOME }}/.local/share/applications"
 
+    postman:
+      download_url: "https://dl.pstmn.io/download/latest/linux_64"
+      install_path: "{{ ansible_env.HOME }}/.local/share/Postman"
+      executable_path: "{{ ansible_env.HOME }}/.local/share/Postman/app/Postman"
+      icon_path: "{{ ansible_env.HOME }}/.local/share/Postman/app/resources/app/assets/icon.png"
+      applications_path: "{{ ansible_env.HOME }}/.local/share/applications"
+
 upstream_codename_map:
   linux_mint_20: focal
   linux_mint_21: jammy

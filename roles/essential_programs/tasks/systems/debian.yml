@@ -148,7 +148,7 @@
     toolbox_bin: "{{ essential_programs.debian.jetbrains_toolbox.executable_path }}"
     toolbox_icon: "{{ essential_programs.debian.jetbrains_toolbox.install_path }}/bin/toolbox-tray-color.png"
 
-- name: Update desktop database
+- name: Update desktop database for JetBrains Toolbox
   ansible.builtin.command:
     cmd: update-desktop-database "{{ essential_programs.debian.jetbrains_toolbox.applications_path }}"
   changed_when: false
@@ -188,3 +188,72 @@
   ansible.builtin.file:
     path: "/tmp/mockoon-{{ mockoon_version_simplified }}.amd64.deb"
     state: absent
+
+###############
+## Postman  ##
+###############
+- name: Set Postman archive tmp path
+  ansible.builtin.set_fact:
+    postman_archive_tmp_path: "/tmp/postman-linux-x64.tar.gz"
+
+- name: Download Postman archive
+  ansible.builtin.get_url:
+    url: "{{ essential_programs.debian.postman.download_url }}"
+    dest: "{{ postman_archive_tmp_path }}"
+    mode: '0644'
+
+- name: Create Postman install dir
+  ansible.builtin.file:
+    path: "{{ essential_programs.debian.postman.install_path }}"
+    state: directory
+    mode: '0755'
+
+- name: Extract Postman
+  ansible.builtin.unarchive:
+    src: "{{ postman_archive_tmp_path }}"
+    dest: "{{ essential_programs.debian.postman.install_path }}"
+    remote_src: true
+    extra_opts: ['--strip-components=0']
+
+- name: Make Postman binary executable
+  ansible.builtin.file:
+    path: "{{ essential_programs.debian.postman.executable_path }}"
+    mode: '0755'
+
+- name: Ensure user local bin directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.local/bin"
+    state: directory
+    mode: '0755'
+
+- name: Symlink Postman to local bin
+  ansible.builtin.file:
+    src: "{{ essential_programs.debian.postman.executable_path }}"
+    dest: "{{ ansible_env.HOME }}/.local/bin/postman"
+    state: link
+
+- name: Clean up Postman downloaded archive
+  ansible.builtin.file:
+    path: "{{ postman_archive_tmp_path }}"
+    state: absent
+
+### Register Postman in Desktop
+- name: Ensure local applications dir exists
+  ansible.builtin.file:
+    path: "{{ essential_programs.debian.postman.applications_path }}"
+    state: directory
+    mode: '0755'
+
+- name: Install Postman desktop entry
+  ansible.builtin.template:
+    src: "postman.desktop.j2"
+    dest: "{{ essential_programs.debian.postman.applications_path }}/Postman.desktop"
+    mode: '0644'
+  vars:
+    postman_bin: "{{ essential_programs.debian.postman.executable_path }}"
+    postman_icon: "{{ essential_programs.debian.postman.icon_path }}"
+
+- name: Update desktop database for Postman
+  ansible.builtin.command:
+    cmd: update-desktop-database "{{ essential_programs.debian.postman.applications_path }}"
+  changed_when: false

@@ -9,3 +9,4 @@ essential_packages:
   - wget
   - flatpak
   - apt-transport-https
+  - openssl
