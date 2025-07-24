@@ -213,7 +213,7 @@
     src: "{{ postman_archive_tmp_path }}"
     dest: "{{ essential_programs.debian.postman.install_path }}"
     remote_src: true
-    extra_opts: ['--strip-components=0']
+    extra_opts: ['--strip-components=1']
 
 - name: Make Postman binary executable
   ansible.builtin.file:
