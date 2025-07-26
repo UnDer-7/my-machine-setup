@@ -5,10 +5,17 @@
 ##########
 
 # NVIDIA GPU DRIVERS
-- name: Add graphics drivers PPA
+- name: Add graphics drivers PPA GPG key
+  ansible.builtin.apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: FCAE110B1118213C
+  become: true
+
+- name: Add graphics drivers PPA repository
   ansible.builtin.apt_repository:
-    repo: ppa:graphics-drivers/ppa
+    repo: "deb https://ppa.launchpadcontent.net/graphics-drivers/ppa/ubuntu {{ ppa_ubuntu_codename }} main"
     state: present
+    filename: graphics-drivers-ppa
     update_cache: true
   become: true
 
