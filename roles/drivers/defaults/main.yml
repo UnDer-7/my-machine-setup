@@ -1,0 +1,4 @@
+---
+
+# Default settings for drivers role
+nvidia_driver_auto_install: true
