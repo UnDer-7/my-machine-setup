@@ -1,5 +1,10 @@
 ---
 
+#########
+# JAVA  #
+#########
+
+# SDKMAN
 - name: Check if SDKMAN is already installed
   ansible.builtin.stat:
     path: "{{ sdkman.install_dir }}"
@@ -30,6 +35,7 @@
     msg: "SDKMAN installed successfully: {{ sdkman_version.stdout }}"
   when: sdkman_version.stdout is defined
 
+# SDKS
 - name: Set SDKMAN to non-interactive mode
   ansible.builtin.lineinfile:
     path: "{{ ansible_env.HOME }}/.sdkman/etc/config"
@@ -70,6 +76,11 @@
     regexp: '^sdkman_auto_answer='
     line: 'sdkman_auto_answer=false'
 
+###########
+# NODE JS #
+###########
+
+# FNM
 - name: Check if fnm is already installed
   ansible.builtin.stat:
     path: "{{ ansible_env.HOME }}/.local/share/fnm"
@@ -92,6 +103,7 @@
     replace: 'eval "$(fnm env --use-on-cd --version-file-strategy=recursive)"'
   when: not fnm_dir.stat.exists
 
+# SDKS
 - name: Install Node.js LTS via fnm
   ansible.builtin.shell: |
     set -o pipefail
