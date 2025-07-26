@@ -1,6 +1,6 @@
 ---
 
-# ToDo: cooler control, activiy watcher
+# ToDo: cooler control, activiy watcher, handBrake
 
 essential_programs:
   flatpak:
@@ -16,6 +16,7 @@ essential_programs:
     - copyq
     - vlc
     - mediainfo-gui
+    - vim
   arch:
     aur:
       - plex-desktop
