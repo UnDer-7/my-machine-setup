@@ -96,11 +96,14 @@
   when: not fnm_dir.stat.exists
   changed_when: "true"
 
-- name: Configure fnm with auto-use and recursive version file strategy
-  ansible.builtin.replace:
+- name: Add fnm to PATH and shell integration in dotfile .zshrc
+  ansible.builtin.blockinfile:
     path: "{{ common.dotfile_config_home }}/zsh/.zshrc"
-    regexp: 'eval "`fnm env`"'
-    replace: 'eval "$(fnm env --use-on-cd --version-file-strategy=recursive)"'
+    marker: "# {mark} FNM CONFIGURATION"
+    block: |
+      # FNM Node.js version manager
+      export PATH="{{ ansible_env.HOME }}/.local/share/fnm:$PATH"
+      eval "$(fnm env --use-on-cd --version-file-strategy=recursive)"
   when: not fnm_dir.stat.exists
 
 # SDKS
