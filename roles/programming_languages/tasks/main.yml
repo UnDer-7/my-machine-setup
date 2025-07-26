@@ -8,6 +8,7 @@
 - name: Install SDKMAN
   ansible.builtin.shell: |
     set -o pipefail
+    export ZDOTDIR="{{ common.dotfile_config_home }}/zsh"
     curl -s "{{ sdkman.install_url }}" | bash
   args:
     executable: /bin/bash
