@@ -12,6 +12,7 @@
     - zsh_plugins
     - packages
     - programs
+    - programming_languages
 
   post_tasks:
     - name: Notify user to re-login for shell change to take effect

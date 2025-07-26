@@ -1,0 +1,6 @@
+---
+
+sdkman:
+  install_url: "https://get.sdkman.io"
+  init_script: "{{ ansible_env.HOME }}/.sdkman/bin/sdkman-init.sh"
+  install_dir: "{{ ansible_env.HOME }}/.sdkman"
