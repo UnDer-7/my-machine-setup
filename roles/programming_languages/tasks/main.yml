@@ -96,16 +96,6 @@
   when: not fnm_dir.stat.exists
   changed_when: "true"
 
-- name: Add fnm to PATH and shell integration in dotfile .zshrc
-  ansible.builtin.blockinfile:
-    path: "{{ common.dotfile_config_home }}/zsh/.zshrc"
-    marker: "# {mark} FNM CONFIGURATION"
-    block: |
-      # FNM Node.js version manager
-      export PATH="{{ ansible_env.HOME }}/.local/share/fnm:$PATH"
-      eval "$(fnm env --use-on-cd --version-file-strategy=recursive)"
-  when: not fnm_dir.stat.exists
-
 # SDKS
 - name: Install Node.js LTS via fnm
   ansible.builtin.shell: |
