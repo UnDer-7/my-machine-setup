@@ -13,6 +13,7 @@
     - packages
     - programs
     - programming_languages
+    - docker
 
   post_tasks:
     - name: Notify user to re-login for shell change to take effect

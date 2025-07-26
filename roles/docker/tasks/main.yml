@@ -1,0 +1,77 @@
+---
+
+#########
+# DOCKER #
+#########
+
+# REPOSITORY SETUP
+- name: Update package index
+  ansible.builtin.apt:
+    update_cache: true
+  become: true
+
+- name: Create keyrings directory
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+  become: true
+
+- name: Download Docker GPG key
+  ansible.builtin.get_url:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /etc/apt/keyrings/docker.asc
+    mode: '0644'
+  become: true
+
+- name: Add Docker repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch={{ ansible_architecture }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    state: present
+    filename: docker
+  become: true
+
+# PACKAGE INSTALLATION
+- name: Install Docker packages
+  ansible.builtin.apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present
+    update_cache: true
+  become: true
+
+# USER CONFIGURATION
+- name: Add user to docker group
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    groups: docker
+    append: true
+  become: true
+
+# DOCKER-COMPOSE INSTALLATION
+- name: Get latest docker-compose release version
+  ansible.builtin.uri:
+    url: https://api.github.com/repos/docker/compose/releases/latest
+    method: GET
+    return_content: true
+  register: docker_compose_release
+
+- name: Download docker-compose binary
+  ansible.builtin.get_url:
+    url: "https://github.com/docker/compose/releases/download/{{ docker_compose_release.json.tag_name }}/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}"
+    dest: /usr/local/bin/docker-compose
+    mode: '0755'
+  become: true
+
+- name: Verify docker-compose installation
+  ansible.builtin.command: docker-compose --version
+  register: docker_compose_version
+  changed_when: false
+
+- name: Display docker-compose version
+  ansible.builtin.debug:
+    msg: "Docker Compose installed: {{ docker_compose_version.stdout }}"
