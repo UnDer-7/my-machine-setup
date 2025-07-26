@@ -10,3 +10,4 @@ essential_packages:
   - flatpak
   - apt-transport-https
   - openssl
+  - gpg

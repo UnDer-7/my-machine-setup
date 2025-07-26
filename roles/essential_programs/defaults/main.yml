@@ -68,6 +68,15 @@ essential_programs:
         key_url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x643FF34AF9151DC814DD3A1B2303D595EE907473"
         ascii_key: "/usr/share/keyrings/solaar-unifying-archive-keyring.asc"
         keyring: "/usr/share/keyrings/solaar-unifying-archive-keyring.gpg"
+
+      - id: vscode
+        name: "code"
+        repo: "https://packages.microsoft.com/repos/code"
+        components: "stable main"
+        key_url: "https://packages.microsoft.com/keys/microsoft.asc"
+        ascii_key: "/usr/share/keyrings/microsoft-archive-keyring.asc"
+        keyring: "/usr/share/keyrings/microsoft-archive-keyring.gpg"
+
     jetbrains_toolbox:
       release_url: https://data.services.jetbrains.com/products/releases?code=TBA&latest=true&type=release
       install_path: "{{ ansible_env.HOME }}/.local/share/JetBrains/Toolbox"
