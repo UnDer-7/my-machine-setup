@@ -5,15 +5,15 @@
   gather_facts: true
   # Should be run in order below
   roles:
-    - update
-    - zsh-install
-    - zsh-dotfiles
-    - zsh-themes
-    - zsh_plugins
-    - packages
-    - programs
-    - programming_languages
-    - docker
+#    - update
+#    - zsh-install
+#    - zsh-dotfiles
+#    - zsh-themes
+#    - zsh_plugins
+#    - packages
+#    - programs
+#    - programming_languages
+#    - docker
     - drivers
 
   post_tasks:
