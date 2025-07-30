@@ -281,6 +281,11 @@
       https://download.virtualbox.org/virtualbox/{{ vbox_version }}/Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack
   when: vbox_version is defined
 
+- name: Debug VirtualBox Extension Pack URL
+  ansible.builtin.debug:
+    msg: "Downloading VirtualBox Extension Pack from: {{ vbox_extpack_url }}"
+  when: vbox_version is defined
+
 - name: Download VirtualBox Extension Pack
   ansible.builtin.command:
     cmd: wget -O /tmp/Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack {{ vbox_extpack_url }}
