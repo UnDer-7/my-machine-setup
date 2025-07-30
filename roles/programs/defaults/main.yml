@@ -103,4 +103,4 @@ essential_programs:
 upstream_codename_map:
   linux_mint_20: focal
   linux_mint_21: jammy
-  linux_mint_22: jammy
+  linux_mint_22: noble
