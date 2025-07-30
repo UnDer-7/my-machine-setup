@@ -261,14 +261,17 @@
 ###############
 ## HandBrake ##
 ###############
-- name: Ensure HandBrake config directory exists
+- name: Ensure HandBrake Flatpak config directory exists
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.config/HandBrake"
+    path: "/var/app/fr.handbrake.ghb/config/ghb"
     state: directory
     mode: '0755'
+  become: true
 
-- name: Copy HandBrake anime preset
+- name: Copy HandBrake anime preset for Flatpak
   ansible.builtin.copy:
     src: "handbrake_anime20_presets.json"
-    dest: "{{ ansible_env.HOME }}/.config/HandBrake/handbrake_anime20_presets.json"
+#    dest: "{{ ansible_env.HOME }}/.config/HandBrake/handbrake_anime20_presets.json"
+    dest: "/var/app/fr.handbrake.ghb/config/ghb/presets.json"
     mode: '0644'
+  become: true
