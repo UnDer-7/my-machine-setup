@@ -268,7 +268,7 @@
     mode: '0755'
 
 - name: Copy HandBrake anime preset
-  ansible.builtin.template:
-    src: "handbrake_anime20_presets.j2"
-    dest: "{{ ansible_env.HOME }}/.config/HandBrake/Anime20_preset.json"
+  ansible.builtin.copy:
+    src: "handbrake_anime20_presets.json"
+    dest: "{{ ansible_env.HOME }}/.config/HandBrake/handbrake_anime20_presets.json"
     mode: '0644'
