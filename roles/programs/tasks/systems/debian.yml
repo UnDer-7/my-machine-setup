@@ -258,6 +258,45 @@
     cmd: update-desktop-database "{{ essential_programs.debian.postman.applications_path }}"
   changed_when: false
 
+##################
+### VirtualBox ###
+##################
+# VirtualBox is installed via custom repository that follows the standard repository pattern
+
+- name: Get VirtualBox version
+  ansible.builtin.command:
+    cmd: vboxmanage -v
+  register: vbox_version_output
+  changed_when: false
+  failed_when: false
+
+- name: Set VirtualBox version fact
+  ansible.builtin.set_fact:
+    vbox_version: "{{ vbox_version_output.stdout | regex_replace('r.*$', '') }}"
+  when: vbox_version_output.rc == 0
+
+- name: Download VirtualBox Extension Pack
+  ansible.builtin.get_url:
+    url: "https://download.virtualbox.org/virtualbox/{{ vbox_version }}/Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack"
+    dest: "/tmp/Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack"
+    mode: '0644'
+  when: vbox_version is defined
+
+- name: Install VirtualBox Extension Pack
+  ansible.builtin.command:
+    cmd: vboxmanage extpack install --replace /tmp/Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack
+  become: true
+  register: extpack_install
+  changed_when: "'Successfully installed' in extpack_install.stdout"
+  failed_when: "extpack_install.rc != 0 and 'already installed' not in extpack_install.stderr"
+  when: vbox_version is defined
+
+- name: Clean up VirtualBox Extension Pack download
+  ansible.builtin.file:
+    path: "/tmp/Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack"
+    state: absent
+  when: vbox_version is defined
+
 ###############
 ## HandBrake ##
 ###############
