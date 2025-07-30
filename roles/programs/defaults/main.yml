@@ -78,6 +78,15 @@ essential_programs:
         ascii_key: "/usr/share/keyrings/microsoft-archive-keyring.asc"
         keyring: "/usr/share/keyrings/microsoft-archive-keyring.gpg"
 
+      - id: virtualbox
+        name: "virtualbox-7.1"
+        repo: "https://download.virtualbox.org/virtualbox/debian"
+        components: "contrib"
+        codename: "{{ upstream_codename }}"
+        key_url: "https://www.virtualbox.org/download/oracle_vbox_2016.asc"
+        ascii_key: "/usr/share/keyrings/oracle-virtualbox-2016.asc"
+        keyring: "/usr/share/keyrings/oracle-virtualbox-2016.gpg"
+
     jetbrains_toolbox:
       release_url: https://data.services.jetbrains.com/products/releases?code=TBA&latest=true&type=release
       install_path: "{{ ansible_env.HOME }}/.local/share/JetBrains/Toolbox"
