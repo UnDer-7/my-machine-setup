@@ -257,3 +257,18 @@
   ansible.builtin.command:
     cmd: update-desktop-database "{{ essential_programs.debian.postman.applications_path }}"
   changed_when: false
+
+###############
+## HandBrake ##
+###############
+- name: Ensure HandBrake config directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/HandBrake"
+    state: directory
+    mode: '0755'
+
+- name: Copy HandBrake anime preset
+  ansible.builtin.template:
+    src: "handbrake_anime20_presets.j2"
+    dest: "{{ ansible_env.HOME }}/.config/HandBrake/Anime20_preset.json"
+    mode: '0644'
