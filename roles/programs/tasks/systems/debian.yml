@@ -275,12 +275,15 @@
     vbox_version: "{{ vbox_version_output.stdout | regex_replace('r.*$', '') }}"
   when: vbox_version_output.rc == 0
 
+- name: Set VirtualBox Extension Pack URL
+  ansible.builtin.set_fact:
+    vbox_extpack_url: >-
+      https://download.virtualbox.org/virtualbox/{{ vbox_version }}/Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack
+  when: vbox_version is defined
+
 - name: Download VirtualBox Extension Pack
   ansible.builtin.command:
-    cmd: >-
-      wget -O /tmp/Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack
-      https://download.virtualbox.org/virtualbox/{{ vbox_version }}/
-      Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack
+    cmd: wget -O /tmp/Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack {{ vbox_extpack_url }}
     creates: "/tmp/Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack"
   when: vbox_version is defined
   # noqa: command-instead-of-module
