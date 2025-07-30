@@ -276,11 +276,14 @@
   when: vbox_version_output.rc == 0
 
 - name: Download VirtualBox Extension Pack
-  ansible.builtin.get_url:
-    url: "https://download.virtualbox.org/virtualbox/{{ vbox_version }}/Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack"
-    dest: "/tmp/Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack"
-    mode: '0644'
+  ansible.builtin.command:
+    cmd: >-
+      wget -O /tmp/Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack
+      https://download.virtualbox.org/virtualbox/{{ vbox_version }}/
+      Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack
+    creates: "/tmp/Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack"
   when: vbox_version is defined
+  # noqa: command-instead-of-module
 
 - name: Install VirtualBox Extension Pack
   ansible.builtin.command:
