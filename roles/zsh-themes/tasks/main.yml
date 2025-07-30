@@ -10,12 +10,12 @@
     state: directory
     mode: '0755'
 
-- name: Download Powerlevel10k fonts
-  ansible.builtin.get_url:
-    url: "{{ item.url }}"
-    dest: "{{ font.dir }}/{{ item.name }}"
+- name: Copy Powerlevel10k fonts
+  ansible.builtin.copy:
+    src: "fonts/{{ item }}"
+    dest: "{{ font.dir }}/{{ item }}"
     mode: '0644'
-  loop: "{{ font.download_list }}"
+  loop: "{{ font.files }}"
 
 - name: Print IntelliJ font setup instructions
   ansible.builtin.debug:

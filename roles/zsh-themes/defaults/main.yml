@@ -3,17 +3,18 @@
 ###########
 ## FONTS ##
 ###########
+# Font download URLs for future reference:
+# - MesloLGS NF Regular.ttf: https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf
+# - MesloLGS NF Bold.ttf: https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf
+# - MesloLGS NF Italic.ttf: https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf
+# - MesloLGS NF Bold Italic.ttf: https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf
 font:
   dir: "{{ ansible_env.HOME }}/.local/share/fonts"
-  download_list:
-    - name: "MesloLGS NF Regular.ttf"
-      url: "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf"
-    - name: "MesloLGS NF Bold.ttf"
-      url: "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf"
-    - name: "MesloLGS NF Italic.ttf"
-      url: "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf"
-    - name: "MesloLGS NF Bold Italic.ttf"
-      url: "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf"
+  files:
+    - "MesloLGS NF Regular.ttf"
+    - "MesloLGS NF Bold.ttf"
+    - "MesloLGS NF Italic.ttf"
+    - "MesloLGS NF Bold Italic.ttf"
   install_msg_IntelliJ: |
       IntelliJ (and other JetBrains IDEs): Open IDE → Edit → Preferences → Editor → Color Scheme → Console Font.
       Select Use console font instead of the default and set the font name to MesloLGS NF.
