@@ -287,13 +287,19 @@
   when: vbox_version is defined
 
 - name: Download VirtualBox Extension Pack
-  ansible.builtin.command:
-    cmd: wget --progress=dot:giga --timeout=60 -O /tmp/Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack {{ vbox_extpack_url }}
-    creates: "/tmp/Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack"
+  ansible.builtin.get_url:
+    url: "{{ vbox_extpack_url }}"
+    dest: "/tmp/Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack"
+    mode: '0644'
+    timeout: 120
+    headers:
+      User-Agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36"
+    force: false
   when: vbox_version is defined
-  async: 300
-  poll: 5
-  # noqa: command-instead-of-module
+  register: vbox_download
+  until: vbox_download is succeeded
+  retries: 3
+  delay: 10
 
 - name: Install VirtualBox Extension Pack
   ansible.builtin.command:
