@@ -288,9 +288,11 @@
 
 - name: Download VirtualBox Extension Pack
   ansible.builtin.command:
-    cmd: wget -O /tmp/Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack {{ vbox_extpack_url }}
+    cmd: wget --progress=dot:giga --timeout=60 -O /tmp/Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack {{ vbox_extpack_url }}
     creates: "/tmp/Oracle_VirtualBox_Extension_Pack-{{ vbox_version }}.vbox-extpack"
   when: vbox_version is defined
+  async: 300
+  poll: 5
   # noqa: command-instead-of-module
 
 - name: Install VirtualBox Extension Pack
