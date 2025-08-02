@@ -1,4 +1,19 @@
 ---
 
+private:
+  linux_mint_to_ubuntu_codename_map:
+    # Linux Mint to Ubuntu mapping
+    xia: noble        # Linux Mint 22.1 -> Ubuntu 24.04
+    wilma: noble      # Linux Mint 22.0 -> Ubuntu 24.04
+    vera: jammy       # Linux Mint 21.3 -> Ubuntu 22.04
+    victoria: jammy   # Linux Mint 21.2 -> Ubuntu 22.04
+    vanessa: jammy    # Linux Mint 21.1 -> Ubuntu 22.04
+    virginia: jammy   # Linux Mint 21.0 -> Ubuntu 22.04
+    una: focal        # Linux Mint 20.3 -> Ubuntu 20.04
+    ulyssa: focal     # Linux Mint 20.2 -> Ubuntu 20.04
+    ulyana: focal     # Linux Mint 20.1 -> Ubuntu 20.04
+    uliana: focal     # Linux Mint 20.0 -> Ubuntu 20.04
+
 common:
   dotfile_config_home: "{{ ansible_env.HOME }}/my_dotfile_config"
+  linux_mint_to_ubuntu_codename: "{{ linux_mint_to_ubuntu_codename_map[ansible_distribution_release] | default(ansible_distribution_release) }}"

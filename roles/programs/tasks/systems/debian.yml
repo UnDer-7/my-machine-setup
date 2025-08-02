@@ -3,19 +3,6 @@
 ###################
 ### Custom Repo ###
 ###################
-- name: Determine upstream Ubuntu codename for PPAs
-  ansible.builtin.set_fact:
-    upstream_codename: >-
-      {{ upstream_codename_map[
-           (
-             ansible_facts['distribution']
-               | lower
-               | replace(' ', '_')
-           ) ~ '_' ~
-           ansible_facts.lsb.major_release
-         ]
-         | default(ansible_facts.lsb.codename) }}
-
 - name: Cleanup any legacy underscore-named repo lists
   become: true
   ansible.builtin.file:

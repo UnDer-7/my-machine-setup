@@ -13,7 +13,7 @@
 
 - name: Add graphics drivers PPA repository
   ansible.builtin.apt_repository:
-    repo: "deb https://ppa.launchpadcontent.net/graphics-drivers/ppa/ubuntu {{ ppa_ubuntu_codename }} main"
+    repo: "deb https://ppa.launchpadcontent.net/graphics-drivers/ppa/ubuntu {{ common.linux_mint_to_ubuntu_codename }} main"
     state: present
     filename: graphics-drivers-ppa
     update_cache: true
