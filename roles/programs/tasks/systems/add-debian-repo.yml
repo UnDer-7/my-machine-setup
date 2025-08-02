@@ -21,6 +21,12 @@
     state: absent
   when: not ansible_check_mode
 
+- name: Remove legacy Microsoft keyring (if exists)
+  ansible.builtin.file:
+    path: "/usr/share/keyrings/microsoft.gpg"
+    state: absent
+  when: repo.id == "vscode" and not ansible_check_mode
+
 - name: Convert ASCII key to GPG keyring for {{ repo.id }}
   ansible.builtin.command:
     cmd: >
@@ -44,6 +50,15 @@
     warn: false
   changed_when: false
   failed_when: false
+
+- name: Remove legacy Microsoft sources (if exists)
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "/etc/apt/sources.list.d/vscode.list"
+    - "/etc/apt/sources.list.d/microsoft-prod.list"
+  when: repo.id == "vscode"
 
 - name: Add APT repository for {{ repo.id }}
   ansible.builtin.apt_repository:
