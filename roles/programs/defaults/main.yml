@@ -82,6 +82,7 @@ essential_programs:
         name: "virtualbox-7.1"
         repo: "https://download.virtualbox.org/virtualbox/debian"
         components: "contrib"
+        arch: "amd64"
         codename: "{{ common.linux_mint_to_ubuntu_codename }}"
         key_url: "https://www.virtualbox.org/download/oracle_vbox_2016.asc"
         ascii_key: "/usr/share/keyrings/oracle-virtualbox-2016.asc"

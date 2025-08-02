@@ -5,15 +5,32 @@
 ##########
 
 # NVIDIA GPU DRIVERS
-- name: Add graphics drivers PPA GPG key
-  ansible.builtin.apt_key:
-    keyserver: keyserver.ubuntu.com
-    id: FCAE110B1118213C
+- name: Download graphics drivers PPA GPG key
+  ansible.builtin.get_url:
+    url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xFCAE110B1118213C"
+    dest: "/usr/share/keyrings/graphics-drivers-ppa.asc"
+    mode: "0644"
+  become: true
+
+- name: Convert graphics drivers key to GPG keyring
+  ansible.builtin.command:
+    cmd: >
+      gpg --batch --dearmor --yes
+      --output /usr/share/keyrings/graphics-drivers-ppa.gpg
+      /usr/share/keyrings/graphics-drivers-ppa.asc
+  args:
+    creates: "/usr/share/keyrings/graphics-drivers-ppa.gpg"
+  become: true
+
+- name: Remove temporary ASCII key file
+  ansible.builtin.file:
+    path: "/usr/share/keyrings/graphics-drivers-ppa.asc"
+    state: absent
   become: true
 
 - name: Add graphics drivers PPA repository
   ansible.builtin.apt_repository:
-    repo: "deb https://ppa.launchpadcontent.net/graphics-drivers/ppa/ubuntu {{ common.linux_mint_to_ubuntu_codename }} main"
+    repo: "deb [signed-by=/usr/share/keyrings/graphics-drivers-ppa.gpg] https://ppa.launchpadcontent.net/graphics-drivers/ppa/ubuntu {{ common.linux_mint_to_ubuntu_codename }} main"
     state: present
     filename: graphics-drivers-ppa
     update_cache: true
