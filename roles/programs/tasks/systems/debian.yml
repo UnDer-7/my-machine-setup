@@ -12,6 +12,18 @@
   loop_control:
     label: "{{ item.id }}"
 
+- name: Remove legacy Microsoft keyring and sources (global cleanup)
+  become: true
+  ansible.builtin.file:
+    path: "{{ cleanup_item }}"
+    state: absent
+  loop:
+    - "/usr/share/keyrings/microsoft.gpg"
+    - "/etc/apt/sources.list.d/vscode.list"
+    - "/etc/apt/sources.list.d/microsoft-prod.list"
+  loop_control:
+    loop_var: cleanup_item
+
 - name: Configure APT repositories in bulk
   ansible.builtin.include_tasks:
     file: add-debian-repo.yml
