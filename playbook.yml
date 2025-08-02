@@ -3,6 +3,18 @@
 - name: Bootstrap local developer machine
   hosts: local
   gather_facts: true
+  
+  pre_tasks:
+    - name: Validate Linux Mint to Ubuntu codename mapping exists
+      ansible.builtin.fail:
+        msg: |
+          Cannot determine correct Ubuntu codename for Linux Mint {{ ansible_distribution_release }}.
+          Please add mapping for '{{ ansible_distribution_release }}' in group_vars/all.yml
+          under private.linux_mint_to_ubuntu_codename_map
+      when: 
+        - ansible_distribution == "Linux Mint"
+        - ansible_distribution_release not in private.linux_mint_to_ubuntu_codename_map
+  
   # Should be run in order below
   roles:
     - update

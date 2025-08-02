@@ -16,4 +16,4 @@ private:
 
 common:
   dotfile_config_home: "{{ ansible_env.HOME }}/my_dotfile_config"
-  linux_mint_to_ubuntu_codename: "{{ private.linux_mint_to_ubuntu_codename_map[ansible_distribution_release] | default(ansible_distribution_release) }}"
+  linux_mint_to_ubuntu_codename: "{{ private.linux_mint_to_ubuntu_codename_map[ansible_distribution_release] }}"
