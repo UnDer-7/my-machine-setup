@@ -20,16 +20,26 @@
   loop:
     - "/usr/share/keyrings/microsoft.gpg"
     - "/etc/apt/sources.list.d/vscode.list"
+    - "/etc/apt/sources.list.d/vscode.sources"
     - "/etc/apt/sources.list.d/microsoft-prod.list"
+    - "/etc/apt/sources.list.d/microsoft-prod.sources"
   loop_control:
     loop_var: cleanup_item
 
-- name: Configure APT repositories in bulk
+- name: Configure VS Code repository (special handling)
+  ansible.builtin.include_tasks:
+    file: add-vscode-repo.yml
+    apply:
+      become: true
+  vars:
+    repo: "{{ essential_programs.debian.repos | selectattr('id', 'equalto', 'vscode') | first }}"
+
+- name: Configure other APT repositories
   ansible.builtin.include_tasks:
     file: add-debian-repo.yml
     apply:
       become: true
-  loop: "{{ essential_programs.debian.repos }}"
+  loop: "{{ essential_programs.debian.repos | rejectattr('id', 'equalto', 'vscode') }}"
   loop_control:
     label: "{{ item.id }}"
   vars:

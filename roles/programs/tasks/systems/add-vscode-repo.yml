@@ -1,0 +1,48 @@
+---
+- name: Download Microsoft GPG key for VS Code
+  ansible.builtin.get_url:
+    url: "{{ repo.key_url }}"
+    dest: "{{ repo.ascii_key }}"
+    mode: "0644"
+
+- name: Remove any existing Microsoft keyring
+  ansible.builtin.file:
+    path: "{{ repo.keyring }}"
+    state: absent
+  when: not ansible_check_mode
+
+- name: Convert Microsoft key to GPG keyring
+  ansible.builtin.command:
+    cmd: >
+      gpg --batch --dearmor --yes
+      --output {{ repo.keyring }}
+      {{ repo.ascii_key }}
+  args:
+    creates: "{{ repo.keyring }}"
+
+- name: Remove temporary ASCII key file
+  ansible.builtin.file:
+    path: "{{ repo.ascii_key }}"
+    state: absent
+
+- name: Remove legacy VS Code sources (old format)
+  ansible.builtin.file:
+    path: "{{ legacy_file }}"
+    state: absent
+  loop:
+    - "/etc/apt/sources.list.d/vscode.list"
+    - "/etc/apt/sources.list.d/microsoft-prod.list"
+  loop_control:
+    loop_var: legacy_file
+
+- name: Create VS Code repository (DEB822 format)
+  ansible.builtin.copy:
+    dest: "/etc/apt/sources.list.d/vscode.sources"
+    mode: "0644"
+    content: |
+      Types: deb
+      URIs: {{ repo.repo }}
+      Suites: stable
+      Components: main
+      Architectures: amd64,arm64,armhf
+      Signed-By: {{ repo.keyring }}
