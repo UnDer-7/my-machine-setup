@@ -27,6 +27,7 @@
     - programming_languages
     - docker
     - drivers
+    - monitoring
 
   post_tasks:
     - name: Notify user to re-login for shell change to take effect

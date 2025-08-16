@@ -1,0 +1,6 @@
+---
+- name: Install Node Exporter
+  ansible.builtin.import_tasks: install_node_exporter.yml
+  tags:
+    - monitoring
+    - node_exporter

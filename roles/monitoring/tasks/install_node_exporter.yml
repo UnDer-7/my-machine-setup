@@ -1,0 +1,96 @@
+---
+- name: Get latest Node Exporter release info
+  ansible.builtin.uri:
+    url: https://api.github.com/repos/prometheus/node_exporter/releases/latest
+    method: GET
+    return_content: true
+  register: node_exporter_release_info
+
+- name: Set Node Exporter version
+  ansible.builtin.set_fact:
+    node_exporter_version: "{{ node_exporter_release_info.json.tag_name | regex_replace('^v', '') }}"
+
+- name: Set Node Exporter download URL
+  ansible.builtin.set_fact:
+    node_exporter_download_url: >-
+      https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz
+
+- name: Create node_exporter user
+  ansible.builtin.user:
+    name: "{{ node_exporter_user }}"
+    group: "{{ node_exporter_group }}"
+    system: true
+    shell: /bin/false
+    home: /var/lib/node_exporter
+    createhome: false
+  become: true
+
+- name: Create node_exporter group
+  ansible.builtin.group:
+    name: "{{ node_exporter_group }}"
+    system: true
+  become: true
+
+- name: Create installation directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ node_exporter_user }}"
+    group: "{{ node_exporter_group }}"
+    mode: '0755'
+  loop:
+    - "{{ node_exporter_install_dir }}"
+    - "{{ node_exporter_config_dir }}"
+  become: true
+
+- name: Download Node Exporter
+  ansible.builtin.get_url:
+    url: "{{ node_exporter_download_url }}"
+    dest: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+    mode: '0644'
+
+- name: Extract Node Exporter
+  ansible.builtin.unarchive:
+    src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+    dest: "/tmp"
+    remote_src: true
+    creates: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64"
+
+- name: Copy Node Exporter binary
+  ansible.builtin.copy:
+    src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
+    dest: "{{ node_exporter_bin_dir }}/node_exporter"
+    owner: root
+    group: root
+    mode: '0755'
+    remote_src: true
+  become: true
+  notify: restart node_exporter
+
+- name: Create systemd service file
+  ansible.builtin.template:
+    src: node_exporter.service.j2
+    dest: /etc/systemd/system/node_exporter.service
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify:
+    - reload systemd
+    - restart node_exporter
+
+- name: Start and enable Node Exporter service
+  ansible.builtin.systemd:
+    name: node_exporter
+    state: started
+    enabled: true
+    daemon_reload: true
+  become: true
+
+- name: Clean up downloaded files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+    - "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64"

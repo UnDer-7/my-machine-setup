@@ -1,0 +1,11 @@
+---
+# Node Exporter configuration
+node_exporter_user: node_exporter
+node_exporter_group: node_exporter
+node_exporter_port: 9100
+node_exporter_install_dir: /opt/node_exporter
+node_exporter_bin_dir: /usr/local/bin
+node_exporter_config_dir: /etc/node_exporter
+node_exporter_args:
+  - "--collector.systemd"
+  - "--collector.processes"

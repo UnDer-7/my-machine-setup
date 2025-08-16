@@ -1,0 +1,28 @@
+[Unit]
+Description=Node Exporter
+Documentation=https://prometheus.io/docs/guides/node-exporter/
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User={{ node_exporter_user }}
+Group={{ node_exporter_group }}
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart={{ node_exporter_bin_dir }}/node_exporter {% for arg in node_exporter_args %}{{ arg }} {% endfor %}
+
+SyslogIdentifier=node_exporter
+Restart=always
+RestartSec=1
+StartLimitInterval=0
+
+ProtectHome=yes
+NoNewPrivileges=yes
+
+ProtectSystem=strict
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=yes
+
+[Install]
+WantedBy=multi-user.target
