@@ -65,7 +65,7 @@
     mode: '0755'
     remote_src: true
   become: true
-  notify: restart node_exporter
+  notify: Restart node_exporter
 
 - name: Create systemd service file
   ansible.builtin.template:
@@ -76,8 +76,8 @@
     mode: '0644'
   become: true
   notify:
-    - reload systemd
-    - restart node_exporter
+    - Reload systemd
+    - Restart node_exporter
 
 - name: Start and enable Node Exporter service
   ansible.builtin.systemd:
