@@ -15,6 +15,12 @@
     node_exporter_download_url: >-
       https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz
 
+- name: Create node_exporter group
+  ansible.builtin.group:
+    name: "{{ node_exporter_group }}"
+    system: true
+  become: true
+
 - name: Create node_exporter user
   ansible.builtin.user:
     name: "{{ node_exporter_user }}"
@@ -23,12 +29,6 @@
     shell: /bin/false
     home: /var/lib/node_exporter
     createhome: false
-  become: true
-
-- name: Create node_exporter group
-  ansible.builtin.group:
-    name: "{{ node_exporter_group }}"
-    system: true
   become: true
 
 - name: Create installation directories
