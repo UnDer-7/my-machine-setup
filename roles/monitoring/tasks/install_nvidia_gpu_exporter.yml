@@ -20,9 +20,7 @@
 
 - name: Set Nvidia GPU Exporter download URL
   ansible.builtin.set_fact:
-    nvidia_gpu_exporter_download_url: >-
-      https://github.com/utkuozdemir/nvidia_gpu_exporter/releases/download/v{{ nvidia_gpu_exporter_version }}/
-      nvidia_gpu_exporter_{{ nvidia_gpu_exporter_version }}_linux_{{ nvidia_gpu_exporter_arch }}.tar.gz
+    nvidia_gpu_exporter_download_url: "https://github.com/utkuozdemir/nvidia_gpu_exporter/releases/download/v{{ nvidia_gpu_exporter_version }}/nvidia_gpu_exporter_{{ nvidia_gpu_exporter_version }}_linux_{{ nvidia_gpu_exporter_arch }}.tar.gz"
 
 - name: Create nvidia_gpu_exporter group
   ansible.builtin.group:
