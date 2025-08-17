@@ -9,3 +9,13 @@ node_exporter_config_dir: /etc/node_exporter
 node_exporter_args:
   - "--collector.systemd"
   - "--collector.processes"
+
+# Nvidia GPU Exporter configuration
+nvidia_gpu_exporter_user: nvidia_gpu_exporter
+nvidia_gpu_exporter_group: nvidia_gpu_exporter
+nvidia_gpu_exporter_port: 9835
+nvidia_gpu_exporter_install_dir: /opt/nvidia_gpu_exporter
+nvidia_gpu_exporter_bin_dir: /usr/bin
+nvidia_gpu_exporter_config_dir: /etc/nvidia_gpu_exporter
+nvidia_gpu_exporter_args:
+  - "--web.listen-address=:{{ nvidia_gpu_exporter_port }}"

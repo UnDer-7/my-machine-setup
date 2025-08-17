@@ -1,0 +1,105 @@
+---
+- name: Get latest Nvidia GPU Exporter release info
+  ansible.builtin.uri:
+    url: https://api.github.com/repos/utkuozdemir/nvidia_gpu_exporter/releases/latest
+    method: GET
+    return_content: true
+  register: nvidia_gpu_exporter_release_info
+
+- name: Set Nvidia GPU Exporter version
+  ansible.builtin.set_fact:
+    nvidia_gpu_exporter_version: "{{ nvidia_gpu_exporter_release_info.json.tag_name | regex_replace('^v', '') }}"
+
+- name: Detect system architecture
+  ansible.builtin.set_fact:
+    nvidia_gpu_exporter_arch: "{{ arch_mapping[ansible_architecture] | default('amd64') }}"
+  vars:
+    arch_mapping:
+      x86_64: amd64
+      aarch64: arm64
+
+- name: Set Nvidia GPU Exporter download URL
+  ansible.builtin.set_fact:
+    nvidia_gpu_exporter_download_url: >-
+      https://github.com/utkuozdemir/nvidia_gpu_exporter/releases/download/v{{ nvidia_gpu_exporter_version }}/
+      nvidia_gpu_exporter_{{ nvidia_gpu_exporter_version }}_linux_{{ nvidia_gpu_exporter_arch }}.tar.gz
+
+- name: Create nvidia_gpu_exporter group
+  ansible.builtin.group:
+    name: "{{ nvidia_gpu_exporter_group }}"
+    system: true
+  become: true
+
+- name: Create nvidia_gpu_exporter user
+  ansible.builtin.user:
+    name: "{{ nvidia_gpu_exporter_user }}"
+    group: "{{ nvidia_gpu_exporter_group }}"
+    system: true
+    shell: /usr/sbin/nologin
+    home: /var/lib/nvidia_gpu_exporter
+    createhome: false
+  become: true
+
+- name: Create installation directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ nvidia_gpu_exporter_user }}"
+    group: "{{ nvidia_gpu_exporter_group }}"
+    mode: '0755'
+  loop:
+    - "{{ nvidia_gpu_exporter_install_dir }}"
+    - "{{ nvidia_gpu_exporter_config_dir }}"
+  become: true
+
+- name: Download Nvidia GPU Exporter
+  ansible.builtin.get_url:
+    url: "{{ nvidia_gpu_exporter_download_url }}"
+    dest: "/tmp/nvidia_gpu_exporter_{{ nvidia_gpu_exporter_version }}_linux_{{ nvidia_gpu_exporter_arch }}.tar.gz"
+    mode: '0644'
+
+- name: Extract Nvidia GPU Exporter
+  ansible.builtin.unarchive:
+    src: "/tmp/nvidia_gpu_exporter_{{ nvidia_gpu_exporter_version }}_linux_{{ nvidia_gpu_exporter_arch }}.tar.gz"
+    dest: "/tmp"
+    remote_src: true
+    creates: "/tmp/nvidia_gpu_exporter"
+
+- name: Copy Nvidia GPU Exporter binary
+  ansible.builtin.copy:
+    src: "/tmp/nvidia_gpu_exporter"
+    dest: "{{ nvidia_gpu_exporter_bin_dir }}/nvidia_gpu_exporter"
+    owner: root
+    group: root
+    mode: '0755'
+    remote_src: true
+  become: true
+  notify: Restart nvidia_gpu_exporter
+
+- name: Create systemd service file
+  ansible.builtin.template:
+    src: nvidia_gpu_exporter.service.j2
+    dest: /etc/systemd/system/nvidia_gpu_exporter.service
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify:
+    - Reload systemd
+    - Restart nvidia_gpu_exporter
+
+- name: Start and enable Nvidia GPU Exporter service
+  ansible.builtin.systemd:
+    name: nvidia_gpu_exporter
+    state: started
+    enabled: true
+    daemon_reload: true
+  become: true
+
+- name: Clean up downloaded files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "/tmp/nvidia_gpu_exporter_{{ nvidia_gpu_exporter_version }}_linux_{{ nvidia_gpu_exporter_arch }}.tar.gz"
+    - "/tmp/nvidia_gpu_exporter"

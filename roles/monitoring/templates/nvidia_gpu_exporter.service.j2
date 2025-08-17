@@ -1,17 +1,17 @@
 [Unit]
-Description=Node Exporter
-Documentation=https://prometheus.io/docs/guides/node-exporter/
+Description=Nvidia GPU Exporter
+Documentation=https://github.com/utkuozdemir/nvidia_gpu_exporter
 Wants=network-online.target
 After=network-online.target
 
 [Service]
 Type=simple
-User={{ node_exporter_user }}
-Group={{ node_exporter_group }}
+User={{ nvidia_gpu_exporter_user }}
+Group={{ nvidia_gpu_exporter_group }}
 ExecReload=/bin/kill -HUP $MAINPID
-ExecStart={{ node_exporter_bin_dir }}/node_exporter {% for arg in node_exporter_args %}{{ arg }} {% endfor %}
+ExecStart={{ nvidia_gpu_exporter_bin_dir }}/nvidia_gpu_exporter{% for arg in nvidia_gpu_exporter_args %} {{ arg }}{% endfor %}
 
-SyslogIdentifier=node_exporter
+SyslogIdentifier=nvidia_gpu_exporter
 Restart=always
 RestartSec=1
 StartLimitInterval=0
