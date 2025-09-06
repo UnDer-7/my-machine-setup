@@ -28,6 +28,7 @@
     - docker
     - drivers
     - monitoring
+    - user_configuration
 
   post_tasks:
     - name: Notify user to re-login for shell change to take effect

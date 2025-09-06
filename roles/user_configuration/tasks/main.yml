@@ -1,0 +1,37 @@
+---
+- name: Create Workspace directory
+  ansible.builtin.file:
+    path: "{{ workspace_directory }}"
+    state: directory
+    mode: '0755'
+
+- name: Clone workspace repositories
+  ansible.builtin.git:
+    repo: "{{ item.url }}"
+    dest: "{{ workspace_directory }}/{{ item.name }}"
+    update: false
+  loop: "{{ workspace_repositories }}"
+
+- name: Create Plex zoom keybinds directory
+  ansible.builtin.file:
+    path: "{{ plex_zoom_keybinds_path }}"
+    state: directory
+    mode: '0755'
+  when: plex_zoom_keybinds_path is defined
+
+- name: Deploy Plex zoom keybinds script
+  ansible.builtin.copy:
+    src: zoom-keybinds.lua
+    dest: "{{ plex_zoom_keybinds_path }}/zoom-keybinds.lua"
+    mode: '0644'
+  when: plex_zoom_keybinds_path is defined
+
+- name: Determine OS-specific system configuration file
+  ansible.builtin.include_role:
+    name: helper_os_task_locator
+  vars:
+    my_role_name: user_configuration
+
+- name: Include OS-specific system configuration tasks
+  ansible.builtin.include_tasks:
+    file: "{{ os_specific_file }}"

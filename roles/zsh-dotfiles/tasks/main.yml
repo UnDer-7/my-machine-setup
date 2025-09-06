@@ -6,6 +6,7 @@
     dest: "{{ dotfile_repository.dest }}"
     version: "{{ dotfile_repository.version }}"
     update: true
+    force: true
 
 - name: Setup ZDOTDIR
   ansible.builtin.copy:

@@ -1,0 +1,10 @@
+---
+- name: Configure date/time format for Linux Mint
+  ansible.builtin.command:
+    cmd: gsettings set org.cinnamon.desktop.interface clock-format "%d/%m/%y | %a, %B | %H:%M:%S"
+  changed_when: true
+
+- name: Configure screenshot shortcut Super+Shift+S
+  ansible.builtin.command:
+    cmd: gsettings set org.cinnamon.desktop.keybindings.media-keys area-screenshot "['<Super><Shift>s']"
+  changed_when: true

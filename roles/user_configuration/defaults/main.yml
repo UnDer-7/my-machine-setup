@@ -1,0 +1,14 @@
+---
+plex_zoom_keybinds_path_map:
+  Debian: "{{ ansible_env.HOME }}/.var/app/tv.plex.PlexDesktop/data/plex/"
+  Archlinux: "/opt/plex-desktop/resources/"
+
+plex_zoom_keybinds_path: "{{ plex_zoom_keybinds_path_map[ansible_distribution] | default(plex_zoom_keybinds_path_map[ansible_os_family]) }}"
+
+# Workspace configuration
+workspace_directory: "{{ ansible_env.HOME }}/Workspace"
+
+# List of repositories to clone in the workspace
+workspace_repositories:
+  - url: "https://github.com/UnDer-7/jetbrains-ide-settings.git"
+    name: "jetbrains-ide-settings"
