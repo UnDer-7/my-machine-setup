@@ -3,6 +3,7 @@
 private:
   linux_mint_to_ubuntu_codename_map:
     # Linux Mint to Ubuntu mapping
+    zara: noble       # Linux Mint 22.2 -> Ubuntu 24.04
     xia: noble        # Linux Mint 22.1 -> Ubuntu 24.04
     wilma: noble      # Linux Mint 22.0 -> Ubuntu 24.04
     vera: jammy       # Linux Mint 21.3 -> Ubuntu 22.04
