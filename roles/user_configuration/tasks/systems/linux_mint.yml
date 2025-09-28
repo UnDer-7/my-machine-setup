@@ -1,7 +1,12 @@
 ---
+- name: Enable date display in panel clock
+  ansible.builtin.command:
+    cmd: gsettings set org.cinnamon.desktop.interface clock-show-date true
+  changed_when: true
+
 - name: Configure date format for Linux Mint
   ansible.builtin.command:
-    cmd: gsettings set org.cinnamon date-format "%d/%m/%y | %a, %B | %H:%M:%S"
+    cmd: gsettings set org.cinnamon.desktop.interface clock-format "%d/%m/%y | %a, %B | %H:%M:%S"
   changed_when: true
 
 - name: Enable 24-hour clock format
