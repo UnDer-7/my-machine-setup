@@ -11,6 +11,7 @@ essential_programs:
     - com.bitwarden.desktop
     - org.openrgb.OpenRGB
     - fr.handbrake.ghb
+    - org.qbittorrent.qBittorrent
   common:
     - firefox
     - steam
@@ -51,15 +52,6 @@ essential_programs:
         key_url: "https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg"
         ascii_key: "/usr/share/keyrings/spotify-archive-keyring.asc"
         keyring: "/usr/share/keyrings/spotify-archive-keyring.gpg"
-
-      - id: qbittorrent
-        name: "qbittorrent"
-        repo: "https://ppa.launchpadcontent.net/qbittorrent-team/qbittorrent-stable/ubuntu"
-        components: "main"
-        codename: "oracular"
-        key_url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x401E8827DA4E93E44C7D01E6D35164147CA69FC4"
-        ascii_key: "/usr/share/keyrings/qbittorrent-team-archive-keyring.asc"
-        keyring: "/usr/share/keyrings/qbittorrent-team-archive-keyring.gpg"
 
       - id: solaar
         name: "solaar"
