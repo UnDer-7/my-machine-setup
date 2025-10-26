@@ -12,6 +12,7 @@
     update: false
   loop: "{{ workspace_repositories }}"
 
+# https://forums.plex.tv/t/video-zoom-crop-in-plex-desktop-app/803256/6
 - name: Create Plex zoom keybinds directory
   ansible.builtin.file:
     path: "{{ plex_zoom_keybinds_path }}"

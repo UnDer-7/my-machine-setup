@@ -1,6 +1,6 @@
 ---
 plex_zoom_keybinds_path_map:
-  Debian: "{{ ansible_env.HOME }}/.var/app/tv.plex.PlexDesktop/data/plex/"
+  Debian: "{{ ansible_env.HOME }}/.var/app/tv.plex.PlexDesktop/data/plex/scripts/"
   Archlinux: "/opt/plex-desktop/resources/"
 
 plex_zoom_keybinds_path: "{{ plex_zoom_keybinds_path_map[ansible_distribution] | default(plex_zoom_keybinds_path_map[ansible_os_family]) }}"
