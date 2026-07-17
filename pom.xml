@@ -13,20 +13,44 @@
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <plugins.native-maven-plugin>1.1.4</plugins.native-maven-plugin>
-        <plugins.exec-maven-plugin>3.6.3</plugins.exec-maven-plugin>
-        <plugins.shade-maven-plugin>3.6.2</plugins.shade-maven-plugin>
+        <version.plugins.native-maven-plugin>1.1.4</version.plugins.native-maven-plugin>
+        <version.plugins.exec-maven-plugin>3.6.3</version.plugins.exec-maven-plugin>
+        <version.plugins.shade-maven-plugin>3.6.2</version.plugins.shade-maven-plugin>
+        <version.lombok>1.18.46</version.lombok>
 
         <mainClass>br.com.gorillaroxo.Main</mainClass>
 
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${version.lombok}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${version.lombok}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>${plugins.exec-maven-plugin}</version>
+                <version>${version.plugins.exec-maven-plugin}</version>
                 <configuration>
                     <mainClass>${mainClass}</mainClass>
                 </configuration>
@@ -45,7 +69,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>${plugins.shade-maven-plugin}</version>
+                        <version>${version.plugins.shade-maven-plugin}</version>
                         <executions>
                             <execution>
                                 <id>shade-jar</id>
@@ -74,7 +98,7 @@
                     <plugin>
                         <groupId>org.graalvm.buildtools</groupId>
                         <artifactId>native-maven-plugin</artifactId>
-                        <version>${plugins.native-maven-plugin}</version>
+                        <version>${version.plugins.native-maven-plugin}</version>
                         <extensions>true</extensions>
                         <executions>
                             <execution>
