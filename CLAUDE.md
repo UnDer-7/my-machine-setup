@@ -1,77 +1,78 @@
-# CLAUDE.md
+# my-machine-setup
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## O que é
 
-## Overview
+CLI standalone (compilado nativo via GraalVM) pra automatizar setup de máquina nova depois de formatar/instalar Linux. Fluxo de uso:
 
-This is an Ansible-based machine setup project that automates the configuration of development machines. It's designed to be distro-agnostic, supporting Debian/Ubuntu and Arch Linux systems.
+1. Usuário baixa o executável nativo (binário standalone, sem precisar instalar Java/runtime).
+2. Roda `./my-machine-setup` (possivelmente com flags).
+3. Programa executa a instalação/configuração da máquina.
+4. Termina e finaliza — não é daemon, não fica rodando em background.
 
-## Common Commands
+## Distros suportadas
 
-### Primary Operations
-- `make bootstrap` - Run the main playbook to set up the local machine (requires sudo password)
-- `make help` - Display all available make targets with descriptions
+- Arch Linux
+- Linux Mint
+- macOS (planejado pro futuro, não implementar ainda a menos que peçam)
 
-### Installation
-- `make install-ansible/apt-based` - Install Ansible on apt-based distributions (Ubuntu, Debian, etc.)
-- `make setup/apt-based` - Install Ansible and run bootstrap in one command
+## O que o programa faz
 
-### Manual Ansible Execution
-- `ansible-playbook playbook.yml -c local --ask-become-pass` - Direct playbook execution
+1. **Instala programas**: lê arquivo de configuração (`programs.json` na raiz do projeto) que lista quais programas instalar e de onde baixar cada um, por distro (repo oficial, AUR, flatpak, repo de terceiros, binary release do GitHub, etc). O formato desse arquivo ainda está em mudança/refinamento — não considerar a estrutura atual como definitiva, e não documentar o schema aqui.
+2. **Configura o sistema**: além de instalar programas, faz tarefas de configuração — clonar/aplicar dotfiles (repo: https://github.com/UnDer-7/my-dotfile-config), configs do Plex, ajuste de formato de data/hora, etc. Primeira fase do projeto foca só na instalação de programas via `programs.json`; configs extras entram depois (possivelmente como outro arquivo de config externo).
 
-## Architecture
+## Requisitos de comportamento
 
-### Project Structure
-- `playbook.yml` - Main playbook that orchestrates role execution in specific order
-- `roles/` - Individual configuration modules, each handling specific setup tasks
-- `inventory/hosts.ini` - Defines localhost as the target (ansible_connection=local)
-- `ansible.cfg` - Ansible configuration with local-specific settings
-- `group_vars/all.yml` - Global variables shared across all roles
+- **Idempotente**: antes de instalar um programa, verifica se já está instalado. Se sim, pula e loga. Se não, instala.
+- **Isolamento de falha**: se a instalação de um programa falhar, não derruba o programa inteiro — falha só aquele item, loga o erro, continua pros próximos.
+- **Zero dependência externa no ambiente alvo**: por ser nativo (GraalVM), roda em qualquer distro Linux suportada sem precisar instalar JVM, Maven, nem nada.
 
-### Role Architecture
-The project uses a modular role-based architecture executed in this order:
-1. `update` - System updates
-2. `zsh-install` - ZSH shell installation
-3. `zsh-dotfiles` - ZSH configuration files
-4. `zsh-themes` - ZSH theme setup
-5. `zsh_plugins` - ZSH plugin installation
-6. `essential_packages` - Core system packages (curl, wget, htop, etc.)
-7. `essential_programs` - Desktop applications via multiple package managers
+## Stack técnica
 
-### OS Detection Pattern
-The project uses `helper_os_task_locator` role for cross-distro compatibility:
-- Detects distribution and OS family using Ansible facts
-- Maps to specific task files in `roles/*/tasks/systems/`
-- Normalizes distribution names (e.g., "Linux Mint" → "linux_mint")
-- Falls back from specific distribution to OS family
+- **Java + Maven**, sem framework de aplicação.
+- **Sem Spring** (nem Spring Boot, nem Spring Native) — overhead e complexidade de AOT desnecessários pra esse escopo de CLI.
+- **Picocli** pra parsing de linha de comando (flags, subcomandos). Usar o annotation processor (`picocli-codegen`) pra gerar os metadados de reflection automaticamente pro GraalVM native-image.
+- **Injeção de dependência**: na mão (wiring manual no `main()`/bootstrap). Sem Guice/Spring (reflection pesado, exige config extra de native-image). Se o projeto crescer muito em complexidade de grafo de dependências, considerar Dagger 2 (compile-time, zero reflection) — não introduzir agora, sem necessidade.
+- **GraalVM native-image** pra gerar o binário nativo final.
 
-### Package Management Strategy
-`essential_programs` role demonstrates multi-package-manager approach:
-- **Flatpak**: Cross-distro applications (Discord, Bitwarden, etc.)
-- **Arch Linux**: AUR and official repositories
-- **Debian/Ubuntu**: Custom repositories with GPG key management for third-party software
+## Estrutura de pastas (planejada)
 
-### Configuration Management
-- Global variables in `group_vars/all.yml` (currently defines dotfile paths)
-- Role-specific defaults in `roles/*/defaults/main.yml`
-- Upstream codename mapping for Ubuntu-based distributions in role defaults
+```
+br.com.gorillaroxo
+├── Main.java                      # entrypoint picocli
+├── cli/                           # comandos/flags picocli
+├── os/                            # parse /etc/os-release → record Distro(family, id, codename)
+├── config/                        # leitura/parse de programs.json → model
+├── model/                         # Program, InstallSpec, PackageRef (literal|resolver), Source (static-url|github-latest-release|json-api)
+├── installer/
+│   ├── InstallStrategy.java       # interface: isInstalled(Program), install(Program)
+│   ├── PacmanInstaller.java
+│   ├── AurInstaller.java
+│   ├── AptInstaller.java
+│   ├── AptRepoInstaller.java      # add repo (key+source list) + apt install, resolve PackageRef (literal ou resolver dinâmico via apt-cache search)
+│   ├── FlatpakInstaller.java
+│   ├── BinaryReleaseInstaller.java # resolve Source (static-url/github-latest-release/json-api) + extrai archive + symlink + desktop-entry
+│   └── InstallerRegistry.java     # type string → strategy impl
+└── log/                           # logger simples, sem lib externa
+```
 
-## Development Notes
+Sem `type: "custom"` — todo caso hardcoded (ex: nvidia-driver, jetbrains-toolbox) generaliza dentro de um `type` existente enriquecendo os campos `package` (literal ou resolver dinâmico, ex: `apt-cache-pattern` pra pegar versão mais recente) e `source` (literal, `github-latest-release`, ou `json-api` com `json_path` pra extrair URL de resposta JSON aninhada). Ver `programs.json` pros exemplos reais (`nvidia-driver`, `jetbrains-toolbox`).
 
-### Adding New Roles
-1. Create role directory structure under `roles/`
-2. Use `helper_os_task_locator` for OS-specific tasks
-3. Place OS-specific files in `tasks/systems/` subdirectory
-4. Add role to `playbook.yml` in appropriate execution order
+Detecção de distro: lê `/etc/os-release`. Família (arch-like vs debian-like) vem do `ID`. Codename real pra repositórios de terceiro (PPA, docker, virtualbox etc) vem de `UBUNTU_CODENAME` (presente no Linux Mint, aponta pra base Ubuntu) ou `VERSION_CODENAME` como fallback — não hardcode tabela de mapeamento manual.
 
-### Third-party Repository Pattern
-For Debian-based systems, repositories are defined with:
-- Repository URL and components
-- GPG key management (ASCII and binary keyring files)
-- Ubuntu codename mapping for derivative distributions
+Verificação de "já instalado": por pacote, não por binário no PATH — `pacman -Qi` (pacman/AUR), `dpkg -s` (apt/apt-repo), `flatpak list --app` (flatpak), marker de arquivo/symlink em `install_path` (binary-release).
 
-### Lint
-- ALWAYS use the ansible lint project as guideline on best conventions. Site: https://ansible.readthedocs.io/projects/lint/
-- Truthy value should be one of [false, true] | Truthy value should be one of [false, true] | Rule: yaml[truthy] <formatting,yaml>
-- Use FQCN for builtin module actions (apt_repository). | Use `ansible.builtin.apt_repository` or `ansible.legacy.apt_repository` instead. (Check whether actions are using using full qualified collection names.) | Rule: fqcn[action-core] <formatting>
-- ALWAYS write the play names and documentation in english
+## Estrutura atual
+
+- `pom.xml` — build Maven, ainda skeleton.
+- `src/main/java/br/com/gorillaroxo/Main.java` — entry point, ainda placeholder/exploratório.
+- `programs.json` — configuração de programas a instalar (formato em evolução, mas já sem `type: "custom"`).
+
+## legacy_ansible/
+
+Código legado do Ansible (versão antiga do projeto, antes da migração pra Java). Contém `legacy_ansible/CLAUDE.md` próprio com detalhes da arquitetura Ansible.
+
+Objetivo do projeto Java atual é migrar toda a funcionalidade desse Ansible legado.
+
+**Regra: `legacy_ansible/` é somente consulta.** Nunca alterar nada dentro dela — usar só como referência pra entender o que precisa ser migrado e validar se algo já foi migrado corretamente.
+
+Quando a migração terminar (tudo que existe em `legacy_ansible/` tiver equivalente funcional em Java), essa pasta será excluída.

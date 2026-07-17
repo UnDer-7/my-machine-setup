@@ -1,0 +1,171 @@
+{
+  "flatpak_remotes": [
+    {
+      "name": "flathub",
+      "url": "https://dl.flathub.org/repo/flathub.flatpakrepo"
+    }
+  ],
+  "programs": [
+    { "id": "unzip", "category": "essential", "arch": { "type": "pacman", "package": "unzip" }, "debian": { "type": "apt", "package": "unzip" } },
+    { "id": "zip", "category": "essential", "arch": { "type": "pacman", "package": "zip" }, "debian": { "type": "apt", "package": "zip" } },
+    { "id": "xclip", "category": "essential", "arch": { "type": "pacman", "package": "xclip" }, "debian": { "type": "apt", "package": "xclip" } },
+    { "id": "curl", "category": "essential", "arch": { "type": "pacman", "package": "curl" }, "debian": { "type": "apt", "package": "curl" } },
+    { "id": "htop", "category": "essential", "arch": { "type": "pacman", "package": "htop" }, "debian": { "type": "apt", "package": "htop" } },
+    { "id": "wget", "category": "essential", "arch": { "type": "pacman", "package": "wget" }, "debian": { "type": "apt", "package": "wget" } },
+    { "id": "flatpak", "category": "essential", "arch": { "type": "pacman", "package": "flatpak" }, "debian": { "type": "apt", "package": "flatpak" } },
+    { "id": "openssl", "category": "essential", "arch": { "type": "pacman", "package": "openssl" }, "debian": { "type": "apt", "package": "openssl" } },
+    { "id": "gpg", "category": "essential", "arch": { "type": "pacman", "package": "gnupg" }, "debian": { "type": "apt", "package": "gpg" } },
+    { "id": "ca-certificates", "category": "essential", "arch": { "type": "pacman", "package": "ca-certificates" }, "debian": { "type": "apt", "package": "ca-certificates" } },
+    { "id": "jq", "category": "essential", "arch": { "type": "pacman", "package": "jq" }, "debian": { "type": "apt", "package": "jq" } },
+    { "id": "apt-transport-https", "category": "essential", "note": "debian-only, meaningless on pacman, no arch entry on purpose", "debian": { "type": "apt", "package": "apt-transport-https" } },
+
+    { "id": "firefox", "category": "desktop", "arch": { "type": "pacman", "package": "firefox" }, "debian": { "type": "apt", "package": "firefox" } },
+    { "id": "steam", "category": "desktop", "arch": { "type": "pacman", "package": "steam" }, "debian": { "type": "apt", "package": "steam" } },
+    { "id": "copyq", "category": "desktop", "arch": { "type": "pacman", "package": "copyq" }, "debian": { "type": "apt", "package": "copyq" } },
+    { "id": "vlc", "category": "desktop", "arch": { "type": "pacman", "package": "vlc" }, "debian": { "type": "apt", "package": "vlc" } },
+    { "id": "mediainfo-gui", "category": "desktop", "arch": { "type": "pacman", "package": "mediainfo-gui" }, "debian": { "type": "apt", "package": "mediainfo-gui" } },
+    { "id": "vim", "category": "desktop", "arch": { "type": "pacman", "package": "vim" }, "debian": { "type": "apt", "package": "vim" } },
+
+    { "id": "kolourpaint", "category": "desktop", "arch": { "type": "pacman", "package": "kolourpaint" }, "debian": { "type": "flatpak", "package": "org.kde.kolourpaint" } },
+    { "id": "bitwarden", "category": "desktop", "arch": { "type": "pacman", "package": "bitwarden" }, "debian": { "type": "flatpak", "package": "com.bitwarden.desktop" } },
+    { "id": "openrgb", "category": "desktop", "arch": { "type": "pacman", "package": "openrgb" }, "debian": { "type": "flatpak", "package": "org.openrgb.OpenRGB" } },
+    { "id": "discord", "category": "desktop", "arch": { "type": "pacman", "package": "discord" }, "debian": { "type": "flatpak", "package": "com.discordapp.Discord" } },
+    { "id": "qbittorrent", "category": "desktop", "arch": { "type": "pacman", "package": "qbittorrent" }, "debian": { "type": "flatpak", "package": "org.qbittorrent.qBittorrent" } },
+    { "id": "solaar", "category": "desktop", "arch": { "type": "pacman", "package": "solaar" },
+      "debian": {
+        "type": "apt-repo",
+        "package": "solaar",
+        "repo": {
+          "url": "https://ppa.launchpadcontent.net/solaar-unifying/stable/ubuntu",
+          "components": "main",
+          "codename": "auto-ubuntu-equivalent",
+          "key_url": "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x643FF34AF9151DC814DD3A1B2303D595EE907473"
+        }
+      }
+    },
+    { "id": "plex-desktop", "category": "desktop", "arch": { "type": "aur", "package": "plex-desktop" }, "debian": { "type": "flatpak", "package": "tv.plex.PlexDesktop" } },
+    { "id": "zen-browser", "category": "desktop", "arch": { "type": "aur", "package": "zen-browser-bin" }, "debian": { "type": "flatpak", "package": "app.zen_browser.zen" } },
+    { "id": "handbrake", "category": "desktop", "note": "anime preset json also copied post-install, not modeled here yet", "debian": { "type": "flatpak", "package": "fr.handbrake.ghb" } },
+
+    { "id": "google-chrome", "category": "desktop", "arch": { "type": "aur", "package": "google-chrome" },
+      "debian": {
+        "type": "apt-repo",
+        "package": "google-chrome-stable",
+        "repo": {
+          "url": "http://dl.google.com/linux/chrome/deb/",
+          "components": "stable main",
+          "arch": "amd64",
+          "key_url": "https://dl.google.com/linux/linux_signing_key.pub"
+        }
+      }
+    },
+    { "id": "spotify", "category": "desktop", "arch": { "type": "aur", "package": "spotify" },
+      "debian": {
+        "type": "apt-repo",
+        "package": "spotify-client",
+        "repo": {
+          "url": "https://repository.spotify.com",
+          "components": "stable non-free",
+          "key_url": "https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg"
+        }
+      }
+    },
+    { "id": "virtualbox", "category": "desktop",
+      "debian": {
+        "type": "apt-repo",
+        "package": "virtualbox-7.1",
+        "repo": {
+          "url": "https://download.virtualbox.org/virtualbox/debian",
+          "components": "contrib",
+          "arch": "amd64",
+          "codename": "auto-ubuntu-equivalent",
+          "key_url": "https://www.virtualbox.org/download/oracle_vbox_2016.asc"
+        }
+      }
+    },
+    { "id": "vscode", "category": "desktop",
+      "debian": {
+        "type": "apt-repo",
+        "package": "code",
+        "repo": {
+          "url": "https://packages.microsoft.com/repos/code",
+          "components": "stable main",
+          "key_url": "https://packages.microsoft.com/keys/microsoft.asc",
+          "note": "DEB822 .sources format, special-cased task in legacy ansible (add-vscode-repo.yml)"
+        }
+      }
+    },
+
+    { "id": "jetbrains-toolbox", "category": "desktop",
+      "arch": { "type": "aur", "package": "jetbrains-toolbox" },
+      "debian": {
+        "type": "binary-release",
+        "source": {
+          "kind": "json-api",
+          "url": "https://data.services.jetbrains.com/products/releases?code=TBA&latest=true&type=release",
+          "json_path": "TBA[0].downloads.linux.link"
+        },
+        "archive": "tar.gz",
+        "strip_components": 1,
+        "install_path": "~/.local/share/JetBrains/Toolbox",
+        "executable": "bin/jetbrains-toolbox",
+        "symlink": "~/.local/bin/jetbrains-toolbox",
+        "desktop_entry": { "name": "JetBrains Toolbox", "icon": "bin/toolbox-tray-color.png" }
+      }
+    },
+    { "id": "postman", "category": "desktop",
+      "debian": {
+        "type": "binary-release",
+        "source": { "kind": "static-url", "url": "https://dl.pstmn.io/download/latest/linux_64" },
+        "archive": "tar.gz",
+        "install_path": "~/.local/share/Postman",
+        "executable": "app/Postman",
+        "desktop_entry": { "name": "Postman", "icon": "app/icons/icon_128x128.png" }
+      }
+    },
+    { "id": "mockoon", "category": "desktop",
+      "arch": { "type": "aur", "package": "mockoon-bin" },
+      "debian": {
+        "type": "binary-release",
+        "source": { "kind": "github-latest-release", "repo": "mockoon/mockoon", "asset_pattern": "mockoon-{version}.amd64.deb" },
+        "archive": "deb"
+      }
+    },
+
+    { "id": "docker", "category": "dev-tool",
+      "debian": {
+        "type": "apt-repo",
+        "package": ["docker-ce", "docker-ce-cli", "containerd.io", "docker-buildx-plugin", "docker-compose-plugin"],
+        "repo": {
+          "url": "https://download.docker.com/linux/ubuntu",
+          "components": "stable",
+          "arch": "amd64",
+          "codename": "auto-ubuntu-equivalent",
+          "key_url": "https://download.docker.com/linux/ubuntu/gpg"
+        }
+      },
+      "note": "arch install path not yet modeled here, add when ported"
+    },
+    { "id": "docker-compose", "category": "dev-tool",
+      "common": {
+        "type": "binary-release",
+        "source": { "kind": "github-latest-release", "repo": "docker/compose", "asset_pattern": "docker-compose-linux-{arch}" },
+        "install_path": "/usr/local/bin/docker-compose",
+        "mode": "0755"
+      }
+    },
+
+    { "id": "nvidia-driver", "category": "driver",
+      "debian": {
+        "type": "apt-repo",
+        "package": { "resolver": "apt-cache-pattern", "pattern": "^nvidia-driver-[0-9]+$", "pick": "latest" },
+        "repo": {
+          "url": "https://ppa.launchpadcontent.net/graphics-drivers/ppa/ubuntu",
+          "components": "main",
+          "codename": "auto-ubuntu-equivalent",
+          "key_url": "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xFCAE110B1118213C"
+        }
+      }
+    }
+  ]
+}
