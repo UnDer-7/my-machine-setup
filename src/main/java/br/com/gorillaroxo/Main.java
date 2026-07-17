@@ -6,7 +6,7 @@ import java.nio.file.Path;
 
 public class Main {
 
-    static void main() throws IOException {
+    static void main(final String[] args) throws IOException {
         System.out.println(new String(Files.readAllBytes(Path.of("/etc/os-release"))));
     }
 
